@@ -1,0 +1,11 @@
+django==4.1.4
+django-cors-headers==3.7.0
+django-crontab==0.7.1
+django-apscheduler==0.6.2
+pyjwt==1.7.1
+pandas==1.2.2
+tencentcloud-sdk-python==3.0.789
+tencentcloud-sdk-python-ocr==3.0.789
+wxpusher==2.2.0
+matplotlib==3.5.1
+requests==2.27.1

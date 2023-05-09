@@ -13,3 +13,19 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+
+# Python File
+*/__pycache__
+/backend/user/__pycache__
+/backend/user/remind/__pycache__
+/backend/blog/__pycache__
+/backend/app/__pycache__
+/backend/db.sqlite3
+*/__init__.py
+*/migrations
+/backend/user/migrations
+/backend/blog/migrations
+
+# media
+backend/image
