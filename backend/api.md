@@ -1,3 +1,24 @@
+## 后端启动
+
+### 第一步
+无论是否新建了文件都请先删掉db.sqlite3！
+先在后端文件夹下运行如下命令
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+启动项目
+
+### 若出错
+
+若出现形如这样的错误
+django.db.utils.OperationalError: no such table: user_user
+则按如下步骤解决
+如果有则先删掉db.sqlite3，user/migrations文件夹，blog/migrations文件夹，所有文件夹下的__pycache__和__init__。
+python manage.py makemigrations user（或者blog）
+python manage.py makemigrations blog（或者user）
+python manage.py migrate
+python manage.py runserver 
+
 ## 注册
 
 - 路径：/user/register
