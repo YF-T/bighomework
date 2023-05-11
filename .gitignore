@@ -1,19 +1,18 @@
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
-local.properties
-
+/app/.gradle
+/app/local.properties
+/app/.idea/caches
+/app/.idea/libraries
+/app/.idea/modules.xml
+/app/.idea/workspace.xml
+/app/.idea/navEditor.xml
+/app/.idea/assetWizardSettings.xml
+/app.DS_Store
+/app/build
+/app/captures
+/app/.externalNativeBuild
+/app/.cxx
+/app/local.properties
 
 # Python File
 */__pycache__
