@@ -24,7 +24,7 @@ def register(request):
             'sex':'M', 
             'identity':'COMMON', 
             'description':'无', 
-            'image':File(open('/image/user/abc.jpg','rb'))}
+            'image':File(open('./abc.jpg','rb'))}
     _, flag = CreateUser(info)
     if flag:
         response = JsonResponse({'status':'success'})

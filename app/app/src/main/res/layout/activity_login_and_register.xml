@@ -36,9 +36,11 @@
                 android:textSize="25dp"/>
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/username"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:textSize="25dp"/>
+                android:textSize="25dp"
+                android:contentDescription="username"/>
 
         </LinearLayout>
 
@@ -55,13 +57,17 @@
                 android:textSize="25dp"/>
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:textSize="25dp"/>
+                android:textSize="25dp"
+                android:inputType="textPassword"
+                android:contentDescription="password"/>
 
         </LinearLayout>
 
         <Button
+            android:id="@+id/submit"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_marginVertical="20dp"

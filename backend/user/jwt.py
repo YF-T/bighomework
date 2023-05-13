@@ -4,7 +4,7 @@ from user.models import User
 from django.http import JsonResponse
 
 secret = 'juheli_antituberculosis'
-expire_minutes = 200
+expire_minutes = 2000000
 
 def generate_jwt(payload):
     """
@@ -14,7 +14,7 @@ def generate_jwt(payload):
     expiry = datetime.now(tz=timezone.utc) + timedelta(minutes=expire_minutes)
     payload['exp'] = expiry
     token = jwt.encode(payload, secret, algorithm='HS256')
-    return token.decode()
+    return token
     
 def verify_jwt(token):
     """
