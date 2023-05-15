@@ -25,6 +25,9 @@
             android:name=".adddongtai"
             android:exported="false" />
         <activity
+            android:name=".MessageListActivity"
+            android:exported="false" />
+        <activity
             android:name=".dongtai"
             android:exported="false" />
         <activity

@@ -72,7 +72,9 @@ public class GeRenZhongXinFragment extends Fragment {
         message.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO
+                Intent intent = new Intent(getActivity(), MessageListActivity.class);
+                intent.putExtra("username", user_name.getText());
+                startActivity(intent);
             }
         });
         login.setOnClickListener(new View.OnClickListener() {
@@ -133,4 +135,5 @@ public class GeRenZhongXinFragment extends Fragment {
             user_email.setText("");
         }
     }
+
 }
