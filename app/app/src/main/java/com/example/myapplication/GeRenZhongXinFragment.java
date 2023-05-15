@@ -66,7 +66,9 @@ public class GeRenZhongXinFragment extends Fragment {
         personal_info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO
+                Intent intent = new Intent(getActivity(), UserInformationActivity.class);
+                intent.putExtra("username", user_name.getText());
+                startActivity(intent);
             }
         });
         message.setOnClickListener(new View.OnClickListener() {

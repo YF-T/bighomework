@@ -1,6 +1,8 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -13,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class dongtai extends AppCompatActivity {
 
@@ -26,6 +29,10 @@ public class dongtai extends AppCompatActivity {
     public TextView collect;
     public LinearLayout all;
     public TextView title;
+
+    private RecyclerView recyclerView;
+    private CommentAdapter commentAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +51,7 @@ public class dongtai extends AppCompatActivity {
         collect = findViewById(R.id.collect);
         all = findViewById(R.id.all);
         title = findViewById(R.id.title);
+        recyclerView = findViewById(R.id.comment_items);
 
         headimg.setImageResource(dongTaiContent.headimg);
 
@@ -55,7 +63,28 @@ public class dongtai extends AppCompatActivity {
         collect.setText(String.format("收藏(%d)", dongTaiContent.collect));
         title.setText(String.format("# %s", dongTaiContent.title));
         ChangeContentImage(dongTaiContent.imagearray);
+
+        commentAdapter = new CommentAdapter(getComments());
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(commentAdapter);
     }
+
+    private List<CommentContent> getComments() {
+        List<CommentContent> comments = new ArrayList<>();
+
+        // 添加两三条评论到列表中
+        CommentContent comment1 = new CommentContent("John", "Great post!");
+        CommentContent comment2 = new CommentContent("Emma", "I agree with you.");
+        CommentContent comment3 = new CommentContent("Michael", "Well written!");
+
+        comments.add(comment1);
+        comments.add(comment2);
+        comments.add(comment3);
+
+        return comments;
+    }
+
 
     public void ChangeContentImage(ArrayList<String> imagearray) {
         contentimg.removeAllViews();//清空子视图 防止原有的子视图影响

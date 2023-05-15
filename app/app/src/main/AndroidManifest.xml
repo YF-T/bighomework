@@ -17,6 +17,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".UserInformationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserInfomationActivity"
+            android:exported="false" />
+        <activity
             android:name=".LoginAndRegisterActivity"
             android:exported="false"
             android:label="@string/title_activity_login_and_register"
