@@ -20,9 +20,6 @@
             android:name=".UserInformationActivity"
             android:exported="false" />
         <activity
-            android:name=".UserInfomationActivity"
-            android:exported="false" />
-        <activity
             android:name=".LoginAndRegisterActivity"
             android:exported="false"
             android:label="@string/title_activity_login_and_register"
@@ -35,6 +32,9 @@
             android:exported="false" />
         <activity
             android:name=".dongtai"
+            android:exported="false" />
+        <activity
+            android:name=".ShoucangAcitvity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

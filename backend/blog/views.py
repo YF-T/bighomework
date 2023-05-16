@@ -14,7 +14,6 @@ def create(request):
     author = request.user
     content = request.POST.get('content', '')
     tag = request.POST.get('tag', '')
-    img = request.FILES['image']# 这条应该是对的，这条能显示图片
     url_images = request.POST.get('url_images', '')
     info = {'title': title,
             'author': author,
