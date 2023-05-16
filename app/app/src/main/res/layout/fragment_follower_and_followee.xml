@@ -12,8 +12,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         android:textColor="@color/black"
-        android:textSize="20dp"
+        android:textSize="24dp"
         android:padding="10dp"
+        android:fontFamily="@font/msyhbd"
         android:text="我的关注" />
 
     <View

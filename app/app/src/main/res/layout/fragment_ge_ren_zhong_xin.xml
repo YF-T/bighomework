@@ -39,12 +39,14 @@
                     android:layout_height="wrap_content"
                     android:text="Tanyifan"
                     android:textSize="35dp"
+                    android:textColor="@color/black"
                     android:layout_marginBottom="5dp"/>
 
                 <TextView
                     android:id="@+id/user_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/black"
                     android:text="12345678@qq.com"
                     android:textSize="20dp"/>
 
