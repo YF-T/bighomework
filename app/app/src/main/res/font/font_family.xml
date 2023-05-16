@@ -19,11 +19,11 @@
     <font
         android:fontStyle="normal"
         android:fontWeight="400"
-        android:font="@font/STXINGKA" />
+        android:font="@font/stxingka" />
     <font
         android:fontStyle="normal"
         android:fontWeight="400"
-        android:font="@font/STHUPO" />
+        android:font="@font/sthupo" />
 </font-family>
 <!-- 所涉及字体依次为：
  宋体

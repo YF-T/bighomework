@@ -111,6 +111,11 @@ class DongTaiViewHolder extends RecyclerView.ViewHolder {
             GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount);//行数
             GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1
             SquareImageView imageView = new SquareImageView(contentimg.getContext());
+//            WebRequest.downloadImage(imagearray.get(i), bitmap -> {
+//                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
+//                imageView.setImageBitmap(bitmap);
+//                return null;
+//            });
             imageView.setImageURI(Uri.parse(imagearray.get(i)));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));

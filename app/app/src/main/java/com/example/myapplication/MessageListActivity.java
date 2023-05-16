@@ -30,7 +30,6 @@ public class MessageListActivity extends AppCompatActivity {
         messageList.add(new Message("Tom", "What have you been up to?", new Date()));
         messageList.add(new Message("Jerry", "Just working and hanging out with friends.", new Date()));
 
-
         adapter = new MessageListAdapter(this, messageList);
         messageRecyclerView.setAdapter(adapter);
 //        adapter.setOnItemClickListener(new MessageListAdapter.OnItemClickListener() {

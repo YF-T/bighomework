@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         GlobalVariable.getInstance().setContext(this);
+        WebRequest.context = this;
 
         // 页面切换
         bottomNavigationView = findViewById(R.id.bottomnavigation);

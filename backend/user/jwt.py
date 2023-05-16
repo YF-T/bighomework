@@ -3,17 +3,17 @@ import jwt
 from user.models import User
 from django.http import JsonResponse
 
-secret = 'juheli_antituberculosis'
-expire_minutes = 2000000
+secret_key = 'juheli_antituberculosis'
+expire_minutes = 2000
 
 def generate_jwt(payload):
     """
     :param payload: dict 载荷
     :return: 生成jwt
     """
-    expiry = datetime.now(tz=timezone.utc) + timedelta(minutes=expire_minutes)
-    payload['exp'] = expiry
-    token = jwt.encode(payload, secret, algorithm='HS256')
+    secret_key = 'your_secret_key'
+
+    token = jwt.encode(payload, secret_key, algorithm='HS256')
     return token
     
 def verify_jwt(token):
@@ -22,11 +22,17 @@ def verify_jwt(token):
     :param token: jwt
     :return: dict: payload
     """
+    secret_key = 'your_secret_key'
+
     try:
-        payload = jwt.decode(token, secret, algorithm=['HS256'])
-    except (jwt.PyJWTError, jwt.ExpiredSignatureError):
-        payload = None
-    return payload
+        payload = jwt.decode(token, secret_key, algorithms=['HS256'])
+        return payload
+    except jwt.DecodeError:
+        print('Invalid token')
+        return None
+    except jwt.ExpiredSignatureError:
+        print('Token has expired')
+        return None
 
 def check_login(request):
     '''

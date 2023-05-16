@@ -41,8 +41,15 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import android.util.Base64;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 
 public class adddongtai extends AppCompatActivity {
 
@@ -54,13 +61,35 @@ public class adddongtai extends AppCompatActivity {
     public EditText title;
     public SquareImageView addphoto;
     public ArrayList<String> uriArrayList = new ArrayList<String>();
+    public ArrayList<String> urlArrayList = new ArrayList<String>();
     public ActivityResultLauncher<String> pickMedia =
             registerForActivityResult(new ActivityResultContracts.GetMultipleContents(), new ActivityResultCallback<List<Uri>>() {
                 @Override
                 public void onActivityResult(List<Uri> result) {
                     for(Uri uri: result) {
                         uriArrayList.add(uri.toString());
-                        ChangeContentImage();
+                        Log.d("uri", uri.toString());
+                        String imageMediaType = getContentResolver().getType(uri);
+                        try {
+                            WebRequest.sendPostImageRequest("/dongtai/image/upload", new HashMap<>(), getBitmapFromUri(uri), imageMediaType, new Function<HashMap<String, Object>, Void>() {
+                                @Override
+                                public Void apply(HashMap<String, Object> stringObjectHashMap) {
+
+                                    //AddContentImage();
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("url", stringObjectHashMap.toString());
+                                            urlArrayList.add((String) stringObjectHashMap.get("url"));
+                                            ChangeContentImage();
+                                        }
+                                    });
+                                    return null;
+                                }
+                            });
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 }
             });
@@ -94,10 +123,11 @@ public class adddongtai extends AppCompatActivity {
 
         // Restore preferences
 
-        DongTaiContent dongTaiContent1 = new DongTaiContent();
+        //DongTaiContent dongTaiContent1 = new DongTaiContent();
         mPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
 
-        dongTaiContent = deserialize(mPreferences.getString("NewDongTai", serialize(dongTaiContent1)));
+        //dongTaiContent = deserialize(mPreferences.getString("NewDongTai", serialize(dongTaiContent1)));
+        dongTaiContent = new DongTaiContent();
 
         content.setText(dongTaiContent.content);
         title.setText(dongTaiContent.title);
@@ -141,20 +171,19 @@ public class adddongtai extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-        ArrayList<String> base64ArrayList = new ArrayList<String>();
-        for(String uri: uriArrayList) {
-            base64ArrayList.add(uriToBase64(Uri.parse(uri)));
-            Log.d("putin", uriToBase64(Uri.parse(uri)));
-            base64ToUri(uriToBase64(Uri.parse(uri)));
-        }
-
-        DongTaiContent dongTaiContent = new DongTaiContent(publisher.getText().toString() ,R.drawable.thussbuilding ,
-                "0:00", content.getText().toString(), 0, 0, 0,
-                title.getText().toString(), base64ArrayList);
-
-        SharedPreferences.Editor preferencesEditor = mPreferences.edit();
-        preferencesEditor.putString("NewDongTai", serialize(dongTaiContent));
-        preferencesEditor.apply();
+//        ArrayList<String> base64ArrayList = new ArrayList<String>();
+//        for(String uri: uriArrayList) {
+//            base64ArrayList.add(uriToBase64(Uri.parse(uri)));
+//            Log.d("putin", uriToBase64(Uri.parse(uri)));
+//        }
+//
+//        DongTaiContent dongTaiContent = new DongTaiContent(publisher.getText().toString() ,R.drawable.thussbuilding ,
+//                "0:00", content.getText().toString(), 0, 0, 0,
+//                title.getText().toString(), base64ArrayList);
+//
+//        SharedPreferences.Editor preferencesEditor = mPreferences.edit();
+//        preferencesEditor.putString("NewDongTai", serialize(dongTaiContent));
+//        preferencesEditor.apply();
     }
 
     public static String serialize(Serializable obj) {
@@ -214,14 +243,18 @@ public class adddongtai extends AppCompatActivity {
     public void ChangeContentImage() {
         contentimg.removeAllViews();//清空子视图 防止原有的子视图影响
         int columnCount = 3;
-        int size = uriArrayList.size();
+        int size = urlArrayList.size();
         //遍历集合 动态添加
         for (int i = 0; i < size; i++) {
             GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount);//行数
             GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1
             SquareImageView imageView = new SquareImageView(contentimg.getContext());
-            Log.d("changecontent", uriArrayList.get(i));
-            imageView.setImageURI(Uri.parse(uriArrayList.get(i)));
+            Log.d("changecontent", urlArrayList.get(i));
+            WebRequest.downloadImage(urlArrayList.get(i), bitmap -> {
+                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
+                imageView.setImageBitmap(bitmap);
+                return null;
+            });
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             //由于宽（即列）已经定义权重比例 宽设置为0 保证均分
@@ -252,12 +285,80 @@ public class adddongtai extends AppCompatActivity {
         layoutParams.setMargins(2, 2, 2, 2);
         contentimg.addView(addphoto, layoutParams);
     }
+    public void AddContentImage() {
+        int columnCount = 3;
+        int size = urlArrayList.size();
+        int i = size - 1;
+        GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount);//行数
+        GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1
+        SquareImageView imageView = new SquareImageView(contentimg.getContext());
+//        Log.d("changecontent", urlArrayList.get(i));
+//        WebRequest.downloadImage(urlArrayList.get(i), bitmap -> {
+//            // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
+//            imageView.setImageBitmap(bitmap);
+//            return null;
+//        });
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        //由于宽（即列）已经定义权重比例 宽设置为0 保证均分
+        GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
+        layoutParams.rowSpec=rowSpec;
+        layoutParams.columnSpec=columnSpec;
+        layoutParams.setMargins(2, 2, 2, 2);
+        contentimg.addView(imageView, layoutParams);
+
+        rowSpec = GridLayout.spec(size / columnCount);//行数
+        columnSpec = GridLayout.spec(size % columnCount, 1.0f);//列数 列宽的比例 weight=1
+        Log.d("col",columnSpec.toString());
+        addphoto = new SquareImageView(contentimg.getContext());
+        addphoto.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        //由于宽（即列）已经定义权重比例 宽设置为0 保证均分
+        layoutParams = new GridLayout.LayoutParams(new ViewGroup.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
+        layoutParams.rowSpec=rowSpec;
+        layoutParams.columnSpec=columnSpec;
+        layoutParams.setMargins(2, 2, 2, 2);
+        contentimg.addView(addphoto, layoutParams);
+    }
     public void BackToMain(View view) {
         finish();
     }
-    public void Submit(View view) {
+    public void Submit(View view) throws IOException{
         Date date = new Date();
         SimpleDateFormat dateFormat= new SimpleDateFormat("hh:mm");
+
+        HashMap<String, String> requestArgs = new HashMap<>();
+        requestArgs.put("title", title.getText().toString());
+        requestArgs.put("content", content.getText().toString());
+        requestArgs.put("tag", "normal");
+        try {
+            JSONArray jsonArray = JsonUtil.stringArrayListToJsonArray(urlArrayList);
+            requestArgs.put("url_images", jsonArray.toString());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        Context context = this;
+
+
+        WebRequest.sendPostRequest("/dongtai/create", requestArgs, (result) -> {
+            String status = (String) result.get("status");
+            if(status.equals("success")) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "创建成功", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                finish();
+            } else {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(context, "创建失败", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            return null;
+        });
 
         DongTaiContent dongTaiContent = new DongTaiContent(publisher.getText().toString() ,R.drawable.thussbuilding ,
                 dateFormat.format(date), content.getText().toString(), 0, 0, 0,

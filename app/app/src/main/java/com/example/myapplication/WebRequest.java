@@ -1,17 +1,24 @@
 package com.example.myapplication;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +28,8 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -48,6 +57,7 @@ class WebRequest {
     public static WebRequest getInstance() {//唯一的访问入口
         return mInstance;
     }
+    public static Context context;
 
     // 发送GET请求并调用回调函数
     public static void sendGetRequest(String url, HashMap<String, String> args, Function<HashMap<String, Object>, Void> callback) throws IOException {
@@ -164,6 +174,86 @@ class WebRequest {
             }
         });
     }
+
+    private static String getDataColumn(Uri uri, String selection, String[] selectionArgs) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        try (Cursor cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs, null)) {
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                return cursor.getString(columnIndex);
+            }
+        }
+        return null;
+    }
+
+    public static void sendPostImageRequest(String url, HashMap<String, String> args, Bitmap image, String imageMediaType, Function<HashMap<String, Object>, Void> callback) throws IOException {
+        OkHttpClient client = okHttpClient;
+        url = baseUrl + url;
+        String jwt = GlobalVariable.get("jwt", "");
+
+        // 构建请求体
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM);
+
+        // 添加字段参数
+        if (args != null) {
+            for (Map.Entry<String, String> entry : args.entrySet()) {
+                builder.addFormDataPart(entry.getKey(), entry.getValue());
+            }
+        }
+
+        // 添加图像文件参数
+        if (image != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            RequestBody imageBody = RequestBody.create(MediaType.parse(imageMediaType), baos.toByteArray());
+            builder.addFormDataPart("image", "image.jpg", imageBody);
+        }
+
+        RequestBody requestBody = builder.build();
+
+        Request request = new Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .header("Authorization", jwt)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                // 执行回调函数并传递异常信息
+                HashMap<String, Object> result = new HashMap<>();
+                result.put("error", e.getMessage());
+                callback.apply(result);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseBody = response.body().string();
+                JSONObject json = null;
+                try {
+                    json = new JSONObject(responseBody);
+                } catch (JSONException e) {
+                    throw new IOException(e);
+                }
+                HashMap<String, Object> result = new HashMap<>();
+                for (Iterator<String> it = json.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    try {
+                        result.put(key, json.get(key));
+                    } catch (JSONException e) {
+                        throw new IOException(e);
+                    }
+                }
+                response.close();
+
+                // 执行回调函数并传递结果
+                callback.apply(result);
+            }
+        });
+    }
+
 
 
 }

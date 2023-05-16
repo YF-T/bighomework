@@ -11,14 +11,14 @@ Class-based views
     2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
 Including another URLconf
     1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+    2. Add a URL to urlpatterns:  path('dongtai/', include('dongtai.urls'))
 """
 from django.contrib import admin
 from django.urls import path, re_path
 from django.views.static import serve
 from app.settings import MEDIA_ROOT, STATIC_ROOT
 from user import views as user_views
-from blog import views as blog_views
+from blog import views as dongtai_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,16 +32,16 @@ urlpatterns = [
     path('user/myfollows', user_views.showfollowinglist),
     path('user/tobeupdated', user_views.tobeupdatedinfo),
     path('user/updatemyinfo', user_views.updatemyinfo),
-    path('blog/message', blog_views.getusermessage),
-    path('blog/create', blog_views.create),
-    path('blog/search', blog_views.search),
-    path('blog/user/favorites', blog_views.searchfavorites),
-    path('blog/user/blogs', blog_views.searchblogs),
-    path('blog/blog', blog_views.open),
-    path('blog/support', blog_views.approveblog),
-    path('blog/comment/create', blog_views.createcomment),
-    path('blog/comment/approve', blog_views.approvecomment),
-    path('blog/image/upload', blog_views.uploadblogimage),
+    path('dongtai/message', dongtai_views.getusermessage),
+    path('dongtai/create', dongtai_views.create),
+    path('dongtai/search', dongtai_views.search),
+    path('dongtai/user/favorites', dongtai_views.searchfavorites),
+    path('dongtai/user/dongtais', dongtai_views.searchdongtais),
+    path('dongtai/dongtai', dongtai_views.open),
+    path('dongtai/support', dongtai_views.approvedongtai),
+    path('dongtai/comment/create', dongtai_views.createcomment),
+    path('dongtai/comment/approve', dongtai_views.approvecomment),
+    path('dongtai/image/upload', dongtai_views.uploaddongtaiimage),
     path('prescription/create', user_views.createprescription),
     path('prescription/update', user_views.updateprescription),
     path('prescription/prescription', user_views.openprescription),

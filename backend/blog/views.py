@@ -15,14 +15,13 @@ def create(request):
     content = request.POST.get('content', '')
     tag = request.POST.get('tag', '')
     img = request.FILES['image']# 这条应该是对的，这条能显示图片
-    id_image = json.loads('[%s]' % request.POST.get('id_image', ''))
+    url_images = request.POST.get('url_images', '')
     info = {'title': title,
             'author': author,
             'content': content,
-            'tag': tag,
-            'image': img}
-    blog, flag = CreateBlog(info)
-    AddBlogImageToBlog(blog, GetBlogImagesByIds(id_image)[0])
+            'tag': tag, 
+            'url_images': url_images}
+    dongtai, flag = CreateDongTai(info)
     if flag:
         response = JsonResponse({'status': 'success'})
         response.status_code = 200
@@ -32,7 +31,7 @@ def create(request):
     return response
 
 def open(request):
-    blog_id = request.GET.get('id', '')
+    dongtai_id = request.GET.get('id', '')
     user, flag = check_login(request)
     if not flag:
         # 用户没有登录或登录过期时，把user设置成一个伪类，这样可以实现所有的评论/博客都不点赞
@@ -41,10 +40,10 @@ def open(request):
             def __init__(self):
                 self.id = None
         user = Fake()
-    myblog, flag = OpenBlog(blog_id, user)
-    comments, flag2 = showcomments(GetBlogById(blog_id)[0], user) # 因为函数返回的是一个(blog, Ture)二元组故要加一个[0]
+    mydongtai, flag = OpenDongTai(dongtai_id, user)
+    comments, flag2 = showcomments(GetDongTaiById(dongtai_id)[0], user) # 因为函数返回的是一个(dongtai, Ture)二元组故要加一个[0]
     if flag and flag2:
-        response = JsonResponse({'status': 'success', 'blog': myblog, 'comments': comments})
+        response = JsonResponse({'status': 'success', 'dongtai': mydongtai, 'comments': comments})
         response.status_code = 200
     else:
         response = JsonResponse({'status': 'fail'})
@@ -63,20 +62,20 @@ def search(request):
         response = JsonResponse({'status': 'jwt error'})
         response.status_code = 200
         return response
-    flag, bloglist = SearchBlog(key, tag, type, user)
-    if flag and bloglist != "empty list":
+    flag, dongtailist = SearchDongTai(key, tag, type, user)
+    if flag and dongtailist != "empty list":
         response = JsonResponse({'status': 'success',
-            'blogs_time': bloglist[0],
-            'blogs_thumb': bloglist[1],
-            'blogs_browse': bloglist[2],
-            'blogs_comment': bloglist[3]})
+            'dongtais_time': dongtailist[0],
+            'dongtais_thumb': dongtailist[1],
+            'dongtais_browse': dongtailist[2],
+            'dongtais_comment': dongtailist[3]})
         response.status_code = 200
     elif flag:
         response = JsonResponse({'status': 'success', 
-            'blogs_time':[],
-            'blogs_thumb': [],
-            'blogs_browse': [],
-            'blogs_comment': []})
+            'dongtais_time':[],
+            'dongtais_thumb': [],
+            'dongtais_browse': [],
+            'dongtais_comment': []})
         response.status_code = 200
     else:
         response = JsonResponse({'status': 'fail'})
@@ -85,9 +84,9 @@ def search(request):
 
 @login_required    
 def searchfavorites(request):
-    blogs, flag = SearchUserFavorites(request.user)
+    dongtais, flag = SearchUserFavorites(request.user)
     if flag:
-        response = JsonResponse({'status': 'success', 'blogs': blogs})
+        response = JsonResponse({'status': 'success', 'dongtais': dongtais})
         response.status_code = 200
     else:
         response = JsonResponse({'status': 'fail'})
@@ -95,10 +94,10 @@ def searchfavorites(request):
     return response
 
 @login_required    
-def searchblogs(request):
-    blogs, flag = SearchUserBlogs(request.user)
+def searchdongtais(request):
+    dongtais, flag = SearchUserDongTais(request.user)
     if flag:
-        response = JsonResponse({'status': 'success', 'blogs': blogs})
+        response = JsonResponse({'status': 'success', 'dongtais': dongtais})
         response.status_code = 200
     else:
         response = JsonResponse({'status': 'fail'})
@@ -106,25 +105,25 @@ def searchblogs(request):
     return response
 
 @login_required
-def approveblog(request):
+def approvedongtai(request):
     id = request.POST.get('id', '')
-    blog, flag = GetBlogById(id)
+    dongtai, flag = GetDongTaiById(id)
     if not flag:
-        response = JsonResponse({'status': 'blog not found'})
+        response = JsonResponse({'status': 'dongtai not found'})
         response.status_code = 400
         return response
-    support, flag = ApproveBlog(blog, request.user)
+    support, flag = ApproveDongTai(dongtai, request.user)
     bool_support = True if support == 'approve' else False
 
     response = JsonResponse({'status': 'success',
                              'bool_support': bool_support,
-                             'num_thumbing_users': blog.num_thumbs})
+                             'num_thumbing_users': dongtai.num_thumbs})
     response.status_code = 200
     return response
 
 # 通过博客返回所有该博客的评论
-def showcomments(blog: Blog, user: User):
-    comments, flag = GetCommentsByBlog(blog)
+def showcomments(dongtai: DongTai, user: User):
+    comments, flag = GetCommentsByDongTai(dongtai)
     if not flag:
         return 'error', False
     comments_info = []
@@ -146,14 +145,14 @@ def createcomment(request):
     content = request.POST.get('content', '')
     author = request.user
     id = request.POST.get('id', '')
-    blog, flag = GetBlogById(id)
+    dongtai, flag = GetDongTaiById(id)
     if not flag:
-        response = JsonResponse({'status': 'blog not found'})
+        response = JsonResponse({'status': 'dongtai not found'})
         response.status_code = 200
         return response
     info = {'content': content,
             'author': request.user,
-            'blog': blog}
+            'dongtai': dongtai}
     comment, flag = CreateComment(info)
     comment_info = {'id': comment.id,
                     'author': comment.author.name,
@@ -163,7 +162,7 @@ def createcomment(request):
                     'num_thumbing_users': comment.thumbing_users.count(),
                     'bool_thumb': GetCommentApproveStatus(comment, author)}
     response = JsonResponse({'status': 'success',
-                             'num_comment': blog.num_comments,
+                             'num_comment': dongtai.num_comments,
                              'comment': comment_info})
     response.status_code = 200
     return response
@@ -187,22 +186,33 @@ def approvecomment(request):
 
 
 @login_required
-def uploadblogimage(request):
+def uploaddongtaiimage(request):
     image = request.FILES['image']
-    blogimage, flag = CreateBlogImage(image)
+    dongtaiimage, flag = CreateDongTaiImage(image)
     if not flag:
         response = JsonResponse({'status': 'error'})
         response.status_code = 200
         return response
 
     response = JsonResponse({'status': 'success',
-                             'id': blogimage.id,
-                             'url': blogimage.image.url})
+                             'id': dongtaiimage.id,
+                             'url': dongtaiimage.image.url})
     response.status_code = 200
     return response
 
 @login_required
 def getusermessage(request):
+    messages, flag = GetUserRecieveMessage(request.user)
+    if flag:
+        response = JsonResponse({'status': 'success', 'messages': messages})
+        response.status_code = 200
+    else:
+        response = JsonResponse({'status': 'error'})
+        response.status_code = 200
+    return response
+    
+@login_required
+def sendusermessage(request):
     messages, flag = GetUserRecieveMessage(request.user)
     if flag:
         response = JsonResponse({'status': 'success', 'messages': messages})
