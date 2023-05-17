@@ -21,6 +21,7 @@ public class ShoucangAcitvity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
         // 此处应有初始化，暂时不写死
         starList.add(
                 new DongTaiContent("FrantGuo", R.drawable.touxiang, "19:56 Feb 8th",
