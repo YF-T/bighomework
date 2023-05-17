@@ -29,6 +29,7 @@ public class GeRenZhongXinFragment extends Fragment {
     private RelativeLayout login;
     private RelativeLayout register;
     private RelativeLayout logout;
+    private RelativeLayout mystar;
     private ImageView user_image;
     private TextView user_name;
     private TextView user_email;
@@ -55,6 +56,7 @@ public class GeRenZhongXinFragment extends Fragment {
         login = view.findViewById(R.id.login);
         register = view.findViewById(R.id.register);
         logout = view.findViewById(R.id.logout);
+        mystar = view.findViewById(R.id.mystar);
         user_image = view.findViewById(R.id.user_image);
         user_name = view.findViewById(R.id.user_name);
         user_email = view.findViewById(R.id.user_email);
@@ -105,6 +107,14 @@ public class GeRenZhongXinFragment extends Fragment {
                 changeLayoutByStatus(view);
             }
         });
+        mystar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), ShoucangAcitvity.class);
+                intent.putExtra("username", user_name.getText());
+                startActivity(intent);
+            }
+        });
 
         changeLayoutByStatus(view);
 
@@ -119,6 +129,7 @@ public class GeRenZhongXinFragment extends Fragment {
             login.setVisibility(View.GONE);
             register.setVisibility(View.GONE);
             logout.setVisibility(View.VISIBLE);
+            mystar.setVisibility(View.VISIBLE);
             user_name.setText(GlobalVariable.get("username", "default"));
             user_email.setText(GlobalVariable.get("useremail", "default"));
             WebRequest.downloadImage(GlobalVariable.get("userimageurl", "/image/user/abc.jpg"), bitmap -> {
@@ -132,6 +143,7 @@ public class GeRenZhongXinFragment extends Fragment {
             login.setVisibility(View.VISIBLE);
             register.setVisibility(View.VISIBLE);
             logout.setVisibility(View.GONE);
+            mystar.setVisibility(View.GONE);
             user_image.setImageResource(R.drawable.ic_logoutimage_foreground);
             user_name.setText("未登录");
             user_email.setText("");

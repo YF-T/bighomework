@@ -20,6 +20,7 @@ public class ShoucangAcitvity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
         // 此处应有初始化，暂时不写死
         setContentView(R.layout.activity_shoucang);
         recyclerView = findViewById(R.id.recyclerview);
