@@ -8,16 +8,16 @@
         android:id="@+id/user_info"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/thussbuilding"
-        android:orientation="vertical">
+        android:background="@drawable/backimg"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginTop="20dp"
             android:layout_gravity="center"
+            android:layout_marginTop="20dp"
             app:srcCompat="@drawable/touxiang" />
 
         <TextView
@@ -25,10 +25,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textSize="20dp"
+            android:text="Default"
             android:textColor="@color/black"
-            android:textStyle="bold"
-            android:text="Default" />
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -40,19 +40,19 @@
                 android:id="@+id/following"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textStyle="bold"
                 android:layout_marginRight="10dp"
-                android:text="关注：1" />
+                android:layout_weight="1"
+                android:text="关注：1"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/follower"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textStyle="bold"
                 android:layout_marginLeft="10dp"
-                android:text="粉丝：1" />
+                android:layout_weight="1"
+                android:text="粉丝：1"
+                android:textStyle="bold" />
 
         </LinearLayout>
     </LinearLayout>
