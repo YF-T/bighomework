@@ -97,6 +97,7 @@ class WebRequest {
                         throw new IOException(e);
                     }
                 }
+                Log.d("url status", result.get("status").toString());
                 callback.apply(result);
                 response.close();
             }
@@ -141,6 +142,7 @@ class WebRequest {
                         throw new IOException(e);
                     }
                 }
+                Log.d("url status", result.get("status").toString());
                 callback.apply(result);
                 response.close();
             }

@@ -177,7 +177,7 @@ def updatemyinfo(request):  # 更新用户个人信息（不包括头像）
         ich = request.user.id
         ich, _ = GetUserById(ich)
         password = request.POST.get('password', '')
-        if password == '2efb1047074f7a387fa60c82d2b05bc742cfaf8163ccbb2012cb61108f87fa4f':
+        if password == '******':
             password = ich.password
         print(password)
         ChangeProfile = request.POST.get('ifChangeImage')

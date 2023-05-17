@@ -7,14 +7,22 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Function;
 
 public class UserInformationActivity extends AppCompatActivity {
 
     private EditText usernameEditView, introEditView, passwordEditText, emailEditText, ageEditText;
+    private ImageView imageView;
     private Spinner genderSpinner;
     private Button submitButton;
     private Button backButton;
@@ -34,6 +42,7 @@ public class UserInformationActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.email_edittext);
         ageEditText = findViewById(R.id.age_edittext);
         genderSpinner = findViewById(R.id.gender_spinner);
+        imageView = findViewById(R.id.avatar_imageview);
 
         // 获取个人信息
         HashMap<String, String> userInfo = getInfo();
@@ -57,6 +66,11 @@ public class UserInformationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // 执行提交按钮点击后的操作
+                try {
+                    onSaveButtonClick(v);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 finish(); // 结束当前的Activity
             }
         });
@@ -75,6 +89,58 @@ public class UserInformationActivity extends AppCompatActivity {
             setEditable(false);
         } else {
             setEditable(true);
+        }
+
+        // Make the API request to get the user information
+        try {
+            WebRequest.sendGetRequest("/user/tobeupdated", new HashMap<>(), new Function<HashMap<String, Object>, Void>() {
+                @Override
+                public Void apply(HashMap<String, Object> response) {
+                    if (response != null && (boolean) response.get("status")) {
+                        Log.d("info", response.get("info").toString());
+                        HashMap<String, Object> info = null;
+                        try {
+                            info = JsonUtil.jsonObjectToHashMap((JSONObject)response.get("info"));
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        // Extract the user information from the response
+                        String username = (String) info.get("name");
+                        String password = (String) info.get("password");
+                        int age = (int) info.get("age");
+                        String sex = (String) info.get("sex");
+                        String email = (String) info.get("email");
+                        String description = (String) info.get("description");
+                        String image = (String) info.get("image");
+
+                        // Update the UI with the retrieved user information
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                usernameEditView.setText(username);
+                                passwordEditText.setText("******");
+                                ageEditText.setText(String.valueOf(age));
+                                emailEditText.setText(email);
+                                introEditView.setText(description);
+                                WebRequest.downloadImage(GlobalVariable.get("userimageurl", "/image/user/abc.jpg"), bitmap -> {
+                                    // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
+                                    imageView.setImageBitmap(bitmap);
+                                    return null;
+                                });
+                                if(sex.equals("M")) {
+                                    genderSpinner.setSelection(0);
+                                } else {
+                                    genderSpinner.setSelection(1);
+                                }
+                            }
+                        });
+                    }
+                    return null;
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
@@ -107,11 +173,13 @@ public class UserInformationActivity extends AppCompatActivity {
     private HashMap<String, String> getAllInputValues() {
         HashMap<String, String> inputValues = new HashMap<>();
         inputValues.put("username", usernameEditView.getText().toString());
-        inputValues.put("intro", introEditView.getText().toString());
+        inputValues.put("description", introEditView.getText().toString());
         inputValues.put("password", passwordEditText.getText().toString());
         inputValues.put("email", emailEditText.getText().toString());
         inputValues.put("age", ageEditText.getText().toString());
-        inputValues.put("gender", genderSpinner.getSelectedItem().toString());
+        inputValues.put("sex", genderSpinner.getSelectedItem().toString());
+        inputValues.put("uid", "");
+        inputValues.put("ifChangeImage", "0");
         return inputValues;
     }
 
@@ -125,9 +193,16 @@ public class UserInformationActivity extends AppCompatActivity {
     }
 
     // 点击保存按钮的事件处理
-    public void onSaveButtonClick(View view) {
+    public void onSaveButtonClick(View view) throws IOException {
         // 获取所有输入框的值
         HashMap<String, String> inputValues = getAllInputValues();
+
+        WebRequest.sendPostRequest("/user/updatemyinfo", inputValues, new Function<HashMap<String, Object>, Void>() {
+            @Override
+            public Void apply(HashMap<String, Object> stringObjectHashMap) {
+                return null;
+            }
+        });
 
         // 打印输入框的值
         for (String key : inputValues.keySet()) {
