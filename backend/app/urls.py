@@ -33,6 +33,8 @@ urlpatterns = [
     path('user/tobeupdated', user_views.tobeupdatedinfo),
     path('user/updatemyinfo', user_views.updatemyinfo),
     path('blog/message', blog_views.getusermessage),
+    path('chat/send', blog_views.sendchatmsg),
+    path('chat/list', blog_views.getmsglist),
     path('blog/create', blog_views.create),
     path('blog/search', blog_views.search),
     path('blog/user/favorites', blog_views.searchfavorites),

@@ -211,3 +211,30 @@ def getusermessage(request):
         response = JsonResponse({'status': 'error'})
         response.status_code = 200
     return response
+
+@login_required
+def sendchatmsg(request):
+    chat_sender = request.POST.get('chat_sender', '')
+    chat_receiver = request.POST.get('chat_receiver', '')
+    msg = request.POST.get('msg', '')
+    message, flag = SendChat(chat_sender,chat_receiver,msg)
+    if flag:
+        response = JsonResponse({'status': 'success', 'message': message})
+        response.status_code = 200
+    else:
+        response = JsonResponse({'status': 'error'})
+        response.status_code = 200
+    return response
+
+@login_required
+def getmsglist(request):
+    user = request.POST.get('user', '')
+    chater = request.POST.get('chater', '')
+    messages, flag = GetMessageList(user,chater)
+    if flag:
+        response = JsonResponse({'status': 'success', 'messageList': messages})
+        response.status_code = 200
+    else:
+        response = JsonResponse({'status': 'error'})
+        response.status_code = 200
+    return response

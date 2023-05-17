@@ -183,3 +183,61 @@ password：通过路径传输
 失败：
 
 {'status': False, 'id': 'update failed'}
+
+## 发送与某人的聊天
+
+- 路径：/chat/send
+
+- 方法：post
+
+- 参数：
+chat_sender
+chat_receiver
+msg
+
+- curl例子：
+
+- 返回： 
+
+成功：
+
+状态码：200 {'status': 'success'} 
+{‘status’: success, 
+
+'message':{
+
+'sender':
+'receiver':
+'message':
+'created_time':
+
+}
+}
+失败：
+
+{'status': False, 'info': 'error'}
+
+## 获取与某人的聊天记录
+
+- 路径：/chat/list
+
+- 方法：post
+
+- 参数：
+user
+chater
+
+- curl例子：
+
+- 返回： 
+
+成功：
+
+状态码：200 {'status': 'success'} 
+{‘status’: success, 
+
+'messageList':[上方的message]
+}
+失败：
+
+{'status': False, 'info': 'error'}

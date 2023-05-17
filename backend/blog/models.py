@@ -7,7 +7,7 @@ import pandas as pd
 import os
 import re
 
-from user.models import User, GetUserById, CreateUser
+from user.models import User, GetUserById, CreateUser, GetUserByName
 
 class Blog(models.Model):
     title = models.CharField(max_length = 100)  # 文章标题
@@ -374,4 +374,37 @@ def GetUserRecieveMessage(user):
         message['blog_id'] = message.pop('blog__id')
     user.recieve_message.update(new=False)
     return messages, True
+
+
+class ChatMessage(models.Model):
+    sender = models.CharField(max_length = 20) # 发送用户
+    receiver = models.CharField(max_length = 20) # 接收用户
+    message = models.TextField()
+    created_time = models.CharField(max_length = 20)
+    
+def SendChat(sender, receiver, message):
+    info = {
+        'sender': sender, 
+        'receiver': receiver, 
+        'message': message
+    }
+    chatmessage = ChatMessage(**info)
+    time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    chatmessage.created_time = time
+    info["created_time"] = time
+    chatmessage.save()
+    return info, True
+
+def GetMessageList(user,chater):
+    index = ['id','sender','receiver','message','created_time']
+    # print(list(ChatMessage.objects.all()))
+    msglist = ChatMessage.objects.filter(Q(sender=user,receiver=chater)|Q(sender=chater,receiver=user))
+    MessageList = list(msglist.order_by('created_time').values(*index))
+    for message in MessageList:
+        message['sender'] = message.pop('sender')
+        message['receiver'] = message.pop('receiver')
+        message['message'] = message.pop('message')
+        message['created_time'] = message.pop('created_time')
+    print(MessageList)
+    return MessageList, True
         
