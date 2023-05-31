@@ -32,6 +32,7 @@ urlpatterns = [
     path('user/myfollows', user_views.showfollowinglist),
     path('user/tobeupdated', user_views.tobeupdatedinfo),
     path('user/updatemyinfo', user_views.updatemyinfo),
+    path('user/getfollowings', user_views.getfollowings),
     path('dongtai/message', dongtai_views.getusermessage),
     path('dongtai/create', dongtai_views.create),
     path('dongtai/search', dongtai_views.search),

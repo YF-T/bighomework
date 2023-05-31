@@ -118,6 +118,15 @@ def individualinfo(request):  # 返回用户主页的个人信息
 
 
 @login_required
+def getfollowings(request):  # 返回用户主页的个人信息
+    ich = request.user.id
+    ich, _ = GetUserById(ich)
+    followings, _ = GetUserFollower(ich)
+    response = JsonResponse({'status': True, 'followings': followings})
+    response.status_code = 200
+    return response
+
+@login_required
 def showothersinfo(request):
     try:
         id = request.POST.get('id', '')

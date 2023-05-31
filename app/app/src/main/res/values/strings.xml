@@ -17,5 +17,11 @@
         <item>Female</item>
         <item>Other</item>
     </string-array>
+    <string-array name="tags">
+        <item>校园资讯</item>
+        <item>二手交易</item>
+        <item>随手拍摄</item>
+        <item>其他</item>
+    </string-array>
 
 </resources>
