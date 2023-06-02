@@ -17,17 +17,23 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
@@ -49,6 +55,7 @@ import org.json.JSONException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 
 public class adddongtai extends AppCompatActivity {
@@ -60,6 +67,8 @@ public class adddongtai extends AppCompatActivity {
     public LinearLayout all;
     public EditText title;
     public SquareImageView addphoto;
+    private Spinner tagSpinner;
+    private Button getPositionButton;
     public ArrayList<String> uriArrayList = new ArrayList<String>();
     public ArrayList<String> urlArrayList = new ArrayList<String>();
     public ActivityResultLauncher<String> pickMedia =
@@ -135,6 +144,17 @@ public class adddongtai extends AppCompatActivity {
             uriArrayList.add(base64ToUri(base64).toString());
         }
 
+        tagSpinner = findViewById(R.id.gettag);
+        getPositionButton = findViewById(R.id.getposition);
+
+        getPositionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 获取位置信息
+                getLocation();
+            }
+        });
+
         ChangeContentImage();
     }
 
@@ -185,6 +205,43 @@ public class adddongtai extends AppCompatActivity {
 //        preferencesEditor.putString("NewDongTai", serialize(dongTaiContent));
 //        preferencesEditor.apply();
     }
+
+    private void getLocation() {
+        // 创建位置管理器对象
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        // 检查权限
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // 如果没有位置权限，请求用户授权
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+            return;
+        }
+
+        // 获取最后一次已知的位置信息
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Geocoder geocoder = new Geocoder(this, Locale.CHINA);
+        if (location != null) {
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            String address = "找不到地址";
+            try {
+                address = geocoder.getFromLocation(latitude, longitude, 1).get(0).getAddressLine(0);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            String locationString = "纬度: " + String.format("%.1f",latitude) + ", 经度: " + String.format("%.1f",longitude) + "\n" + address;
+
+            // 打印位置信息和标签
+            Log.d("Location", locationString);
+
+            getPositionButton.setText(locationString);
+        } else {
+            Log.e("Location", "Failed to get location");
+        }
+    }
+
 
     public static String serialize(Serializable obj) {
         if(obj!=null) {
@@ -250,11 +307,12 @@ public class adddongtai extends AppCompatActivity {
             GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1
             SquareImageView imageView = new SquareImageView(contentimg.getContext());
             Log.d("changecontent", urlArrayList.get(i));
-            WebRequest.downloadImage(urlArrayList.get(i), bitmap -> {
-                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-                imageView.setImageBitmap(bitmap);
-                return null;
-            });
+//            WebRequest.downloadImage(urlArrayList.get(i), bitmap -> {
+//                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
+//                imageView.setImageBitmap(bitmap);
+//                return null;
+//            });
+            WebRequest.setImageByUrl(imageView, urlArrayList.get(i));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             //由于宽（即列）已经定义权重比例 宽设置为0 保证均分
@@ -329,13 +387,15 @@ public class adddongtai extends AppCompatActivity {
         HashMap<String, String> requestArgs = new HashMap<>();
         requestArgs.put("title", title.getText().toString());
         requestArgs.put("content", content.getText().toString());
-        requestArgs.put("tag", "normal");
-        try {
-            JSONArray jsonArray = JsonUtil.stringArrayListToJsonArray(urlArrayList);
-            requestArgs.put("url_images", jsonArray.toString());
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        requestArgs.put("tag", tagSpinner.getSelectedItem().toString());
+        requestArgs.put("position", getPositionButton.getText().toString());
+//        try {
+//            JSONArray jsonArray = JsonUtil.stringArrayListToJsonArray(urlArrayList);
+//            requestArgs.put("url_images", jsonArray.toString());
+//        } catch (JSONException e) {
+//            throw new RuntimeException(e);
+//        }
+        requestArgs.put("url_images", TextUtils.join(",", urlArrayList));
         Context context = this;
 
 
@@ -360,7 +420,7 @@ public class adddongtai extends AppCompatActivity {
             return null;
         });
 
-        DongTaiContent dongTaiContent = new DongTaiContent(publisher.getText().toString() ,R.drawable.thussbuilding ,
+        DongTaiContent dongTaiContent = new DongTaiContent(publisher.getText().toString() , GlobalVariable.defaultImage,
                 dateFormat.format(date), content.getText().toString(), 0, 0, 0,
                 title.getText().toString(), uriArrayList);
 

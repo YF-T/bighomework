@@ -22,6 +22,7 @@ class DongTai(models.Model):
     num_comments = models.IntegerField()  # 评论数
     num_collects = models.IntegerField()  # 收藏数
     url_images = models.TextField()  # 该条对应的图片
+    position = models.CharField(max_length = 40)
 
 
 def CreateDongTai(info: dict):
@@ -86,7 +87,9 @@ def OpenDongTai(myid: int, user: User):
             'num_collect': mydongtai.num_collects,
             'bool_thumb': GetDongTaiApproveStatus(mydongtai, user),
             'bool_follow': GetUserFollowStatus(mydongtai, user),
-            'url_images': mydongtai.url_images
+            'url_images': mydongtai.url_images, 
+            'position': mydongtai.position, 
+            'content': mydongtai.content
         }
         return dongtai_info, True
     else: 
@@ -94,13 +97,13 @@ def OpenDongTai(myid: int, user: User):
 
 def SearchUserFavorites(user: User):
     user = GetUserById(user.id)
-    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images']
+    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images','position','content']
     favorites = list(user.favorites.all().values(*index))
     return favorites, True
     
 def SearchUserDongTais(user: User):
     user = GetUserById(user.id)
-    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images']
+    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images','position','content']
     dongtais = list(user.dongtais.all().values(*index))
     return dongtais, True
 
@@ -130,7 +133,7 @@ def SortDongTai(sequence: str, data: pd.DataFrame):
 def SearchDongTai(key: str, tag: str, type: str, user: User):
     dongtais = []
     temptag = tag
-    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images']
+    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images','position','content']
     if temptag == '':
         temptag = 'all'
     tpkey = ['default', 'default', 'default', 'default', 'default', 'default']

@@ -123,11 +123,12 @@ public class UserInformationActivity extends AppCompatActivity {
                                 ageEditText.setText(String.valueOf(age));
                                 emailEditText.setText(email);
                                 introEditView.setText(description);
-                                WebRequest.downloadImage(GlobalVariable.get("userimageurl", "/image/user/abc.jpg"), bitmap -> {
-                                    // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-                                    imageView.setImageBitmap(bitmap);
-                                    return null;
-                                });
+                                WebRequest.setImageByUrl(imageView, GlobalVariable.get("userimageurl", "/image/user/abc.jpg"));
+//                                WebRequest.downloadImage(GlobalVariable.get("userimageurl", "/image/user/abc.jpg"), bitmap -> {
+//                                    // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
+//                                    imageView.setImageBitmap(bitmap);
+//                                    return null;
+//                                });
                                 if(sex.equals("M")) {
                                     genderSpinner.setSelection(0);
                                 } else {

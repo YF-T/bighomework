@@ -54,7 +54,8 @@ public class dongtai extends AppCompatActivity {
         title = findViewById(R.id.title);
         recyclerView = findViewById(R.id.comment_items);
 
-        headimg.setImageResource(dongTaiContent.headimg);
+
+        WebRequest.setImageByUrl(headimg, dongTaiContent.headimg);
 
         publisher.setText(dongTaiContent.publisher);
         content.setText(dongTaiContent.content);
