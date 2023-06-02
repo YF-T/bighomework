@@ -1,19 +1,13 @@
 package com.example.myapplication;
 
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
-
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+
+import io.noties.markwon.Markwon;
 
 public class DongTaiAdapter extends RecyclerView.Adapter<DongTaiViewHolder> {
 
@@ -59,7 +55,7 @@ public class DongTaiAdapter extends RecyclerView.Adapter<DongTaiViewHolder> {
         // Retrieve the data for that position.
         DongTaiContent dongTaiContent = dongTaiContents.get(position);
         // Add the data to the view holder.
-        holder.headimg.setImageResource(dongTaiContent.headimg);
+        WebRequest.setImageByUrl(holder.headimg, dongTaiContent.headimg);
         holder.publisher.setText(dongTaiContent.publisher);
         holder.content.setText(dongTaiContent.content);
         holder.time.setText(dongTaiContent.time);
@@ -67,6 +63,10 @@ public class DongTaiAdapter extends RecyclerView.Adapter<DongTaiViewHolder> {
         holder.like.setText(String.format("点赞(%d)", dongTaiContent.like));
         holder.collect.setText(String.format("收藏(%d)", dongTaiContent.collect));
         holder.title.setText(String.format("# %s", dongTaiContent.title));
+
+        Markwon markwon = Markwon.builder(inflater.getContext()).build();
+        markwon.setMarkdown(holder.content, dongTaiContent.content);
+
         holder.ChangeContentImage(dongTaiContent.imagearray);
     }
 
@@ -87,6 +87,8 @@ class DongTaiViewHolder extends RecyclerView.ViewHolder {
     public final TextView collect;
     public final LinearLayout all;
     public final TextView title;
+    public final TextView tag;
+    public final TextView position;
 
     public DongTaiViewHolder(@NonNull View itemView, DongTaiAdapter adapter) {
         super(itemView);
@@ -100,6 +102,8 @@ class DongTaiViewHolder extends RecyclerView.ViewHolder {
         collect = itemView.findViewById(R.id.collect);
         all = itemView.findViewById(R.id.all);
         title = itemView.findViewById(R.id.title);
+        tag = itemView.findViewById(R.id.tag);
+        position = itemView.findViewById(R.id.position);
     }
 
     public void ChangeContentImage(ArrayList<String> imagearray) {

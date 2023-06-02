@@ -132,11 +132,12 @@ public class GeRenZhongXinFragment extends Fragment {
             mystar.setVisibility(View.VISIBLE);
             user_name.setText(GlobalVariable.get("username", "default"));
             user_email.setText(GlobalVariable.get("useremail", "default"));
-            WebRequest.downloadImage(GlobalVariable.get("userimageurl", "/image/user/abc.jpg"), bitmap -> {
-                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-                user_image.setImageBitmap(bitmap);
-                return null;
-            });
+            WebRequest.setImageByUrl(user_image, GlobalVariable.get("userimageurl", "/image/user/abc.jpg"));
+//            WebRequest.downloadImage(GlobalVariable.get("userimageurl", "/image/user/abc.jpg"), bitmap -> {
+//                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
+//                user_image.setImageBitmap(bitmap);
+//                return null;
+//            });
         } else {
             personal_info.setVisibility(View.GONE);
             message.setVisibility(View.GONE);

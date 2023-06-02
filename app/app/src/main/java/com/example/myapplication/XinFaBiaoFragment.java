@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.HARDWARE_PROPERTIES_SERVICE;
 import static android.content.Intent.ACTION_OPEN_DOCUMENT;
 
 import android.content.Intent;
@@ -24,8 +25,14 @@ import android.widget.Button;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -104,24 +111,47 @@ public class XinFaBiaoFragment extends Fragment {
 
     public void initDongTaiContents() {
         dongTaiContents.add(
-                new DongTaiContent("FrantGuo", R.drawable.touxiang, "14:00 Mar 23rd",
+                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "14:00 Mar 23rd",
                         "盛典即将开启，让世界更美。", 1,2,3,"微博盛典",
-                        new ArrayList<Integer>(Arrays.asList(R.drawable.touxiang)), getContext()));
-        dongTaiContents.add(
-                new DongTaiContent("FrantGuo", R.drawable.touxiang, "15:25 Feb 25th",
-                        "感谢徐工集团的大力支持！\n体验很好，下次还来！", 7,10,2, "徐工集团拜访记",
-                        new ArrayList<Integer>(Arrays.asList(R.drawable.xugongjituan1, R.drawable.xugongjituan2,
-                                R.drawable.xugongjituan3, R.drawable.xugongjituan4, R.drawable.xugongjituan6)), getContext()));
-        dongTaiContents.add(
-                new DongTaiContent("Royan", R.drawable.royantouxiang, "18:11 Feb 16th",
-                        "我画了一些马鸥盲盒", 8,0,5, "马鸥二创",
-                        new ArrayList<Integer>(Arrays.asList(R.drawable.mls1, R.drawable.mls2,
-                                R.drawable.mls3, R.drawable.mls4, R.drawable.mls5,
-                                R.drawable.mls6, R.drawable.mls7)), getContext()));
-        dongTaiContents.add(
-                new DongTaiContent("FrantGuo", R.drawable.touxiang, "19:56 Feb 8th",
-                        "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈", 100,8,3, "有趣的动漫分享",
-                        new ArrayList<Integer>(Arrays.asList(R.drawable.manhua1, R.drawable.manhua2,
-                                R.drawable.manhua3, R.drawable.manhua4, R.drawable.manhua5, R.drawable.manhua6)), getContext()));
+                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage))));
+//        dongTaiContents.add(
+//                new DongTaiContent("FrantGuo", R.drawable.touxiang, "15:25 Feb 25th",
+//                        "感谢徐工集团的大力支持！\n体验很好，下次还来！", 7,10,2, "徐工集团拜访记",
+//                        new ArrayList<Integer>(Arrays.asList(R.drawable.xugongjituan1, R.drawable.xugongjituan2,
+//                                R.drawable.xugongjituan3, R.drawable.xugongjituan4, R.drawable.xugongjituan6)), getContext()));
+//        dongTaiContents.add(
+//                new DongTaiContent("Royan", R.drawable.royantouxiang, "18:11 Feb 16th",
+//                        "我画了一些马鸥盲盒", 8,0,5, "马鸥二创",
+//                        new ArrayList<Integer>(Arrays.asList(R.drawable.mls1, R.drawable.mls2,
+//                                R.drawable.mls3, R.drawable.mls4, R.drawable.mls5,
+//                                R.drawable.mls6, R.drawable.mls7)), getContext()));
+//        dongTaiContents.add(
+//                new DongTaiContent("FrantGuo", R.drawable.touxiang, "19:56 Feb 8th",
+//                        "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈", 100,8,3, "有趣的动漫分享",
+//                        new ArrayList<Integer>(Arrays.asList(R.drawable.manhua1, R.drawable.manhua2,
+//                                R.drawable.manhua3, R.drawable.manhua4, R.drawable.manhua5, R.drawable.manhua6)), getContext()));
+    }
+
+    public void searchDongTai() {
+        HashMap<String, String> args = new HashMap<>();
+        args.put("key", "");
+        args.put("tag", "");
+        args.put("type", "all");
+        try {
+            WebRequest.sendGetRequest("/dongtai/search", args, hashMap -> {
+                dongTaiContents.clear();
+                try {
+                    ArrayList<Object> arrayList = JsonUtil.jsonArrayToArrayList(new JSONArray(hashMap.get("dongtais")));
+                    for (Object o: arrayList) {
+                        HashMap<String, Object> dongtaiarg = JsonUtil.jsonObjectToHashMap((JSONObject) o);
+                    }
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                return null;
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

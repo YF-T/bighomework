@@ -47,14 +47,13 @@ public class PersonalHomepageActivity extends AppCompatActivity {
     private ArrayList<DongTaiContent> getDongTaiData() {
         ArrayList<DongTaiContent> dongTaiContents = new ArrayList<>();
         dongTaiContents.add(
-                new DongTaiContent("FrantGuo", R.drawable.touxiang, "14:00 Mar 23rd",
+                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "14:00 Mar 23rd",
                         "盛典即将开启，让世界更美。", 1,2,3,"微博盛典",
-                        new ArrayList<Integer>(Arrays.asList(R.drawable.touxiang)), this));
+                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage))));
         dongTaiContents.add(
-                new DongTaiContent("FrantGuo", R.drawable.touxiang, "15:25 Feb 25th",
+                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "15:25 Feb 25th",
                         "感谢徐工集团的大力支持！\n体验很好，下次还来！", 7,10,2, "徐工集团拜访记",
-                        new ArrayList<Integer>(Arrays.asList(R.drawable.xugongjituan1, R.drawable.xugongjituan2,
-                                R.drawable.xugongjituan3, R.drawable.xugongjituan4, R.drawable.xugongjituan6)), this));
+                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage,GlobalVariable.defaultImage))));
         // Add dummy data here
         return dongTaiContents;
     }

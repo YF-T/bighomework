@@ -9,13 +9,16 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.widget.ImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -151,9 +154,21 @@ class WebRequest {
 
     // 把url转成Bitmap的函数
     public static void downloadImage(String url, final Function<Bitmap, Void> callback) {
+        String oldurl = url;
         url = WebRequest.baseUrl + url;
+
         Log.d("imageurl", url);
         Request request = new Request.Builder().url(url).build();
+
+        // 判断本地是否存在缓存文件
+        File cacheFile = getCacheFile(oldurl);
+        if (cacheFile.exists()) {
+            // 如果缓存文件存在，则直接从本地读取并返回Bitmap
+            Bitmap bitmap = BitmapFactory.decodeFile(cacheFile.getAbsolutePath());
+            callback.apply(bitmap);
+            return;
+        }
+
         okHttpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -171,10 +186,31 @@ class WebRequest {
                 // 将响应体转化为Bitmap
                 Bitmap bitmap = BitmapFactory.decodeStream(response.body().byteStream());
 
+                saveBitmapToCache(bitmap, oldurl);
+
                 // 通过Handler将结果返回给主线程
                 handler.post(() -> callback.apply(bitmap));
             }
         });
+    }
+
+    private static File getCacheFile(String url) {
+        // 根据URL生成唯一的文件名
+        String fileName = url.replace('/', '_');
+        // 根据文件名获取缓存目录下的文件
+        File cacheDir = context.getCacheDir();
+        return new File(cacheDir, fileName);
+    }
+
+    private static void saveBitmapToCache(Bitmap bitmap, String url) {
+        File cacheFile = getCacheFile(url);
+        try (OutputStream outputStream = new FileOutputStream(cacheFile)) {
+            // 将Bitmap保存到缓存文件中
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static String getDataColumn(Uri uri, String selection, String[] selectionArgs) {
@@ -256,6 +292,13 @@ class WebRequest {
         });
     }
 
-
-
+    public static void setImageByUrl(ImageView imageView, String url) {
+//        Uri imageUri = Uri.parse(url);
+//        imageView.setImageURI(imageUri);
+        WebRequest.downloadImage(url, bitmap -> {
+                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
+                imageView.setImageBitmap(bitmap);
+                return null;
+            });
+    }
 }

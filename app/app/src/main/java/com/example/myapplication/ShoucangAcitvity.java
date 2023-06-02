@@ -24,10 +24,9 @@ public class ShoucangAcitvity extends Activity {
 
         // 此处应有初始化，暂时不写死
         starList.add(
-                new DongTaiContent("FrantGuo", R.drawable.touxiang, "19:56 Feb 8th",
-                        "哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈", 100,8,3, "有趣的动漫分享",
-                        new ArrayList<Integer>(Arrays.asList(R.drawable.manhua1, R.drawable.manhua2,
-                                R.drawable.manhua3, R.drawable.manhua4, R.drawable.manhua5, R.drawable.manhua6)), this));
+                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "14:00 Mar 23rd",
+                        "盛典即将开启，让世界更美。", 1,2,3,"微博盛典",
+                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage))));
 
 
         setContentView(R.layout.activity_shoucang);

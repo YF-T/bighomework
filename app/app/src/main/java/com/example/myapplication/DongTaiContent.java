@@ -19,7 +19,7 @@ import java.util.function.Function;
 public class DongTaiContent implements Serializable {
     public int id;
     public String publisher;
-    public int headimg;
+    public String headimg;
     public String time;
     public String content;
     public ArrayList<String> imagearray = new ArrayList<String>(); // 上传image
@@ -27,10 +27,12 @@ public class DongTaiContent implements Serializable {
     public int comment;
     public int collect;
     public String title;
+    public String urlImages;
+    public String position;
 
     public DongTaiContent() {
         publisher = "Tanyifan";
-        headimg = R.drawable.thussbuilding;
+        headimg = "/user/abc.jpg";
         time = "21:00 Apr 4th";
         content = "content";
         title = "title";
@@ -39,32 +41,50 @@ public class DongTaiContent implements Serializable {
         collect = 6;
     }
 
-    public DongTaiContent(String publisher, int headimg, String time, String content, int like, int comment, int collect, String title, ArrayList<Integer> imagearray, Context context) {
-        this.publisher = publisher;
-        this.headimg = headimg;
-        this.time = time;
-        this.content = content;
-        this.like = like;
-        this.comment = comment;
-        this.collect = collect;
-        this.imagearray = new ArrayList<String>();
-        this.title = title;
-        for(Integer resId: imagearray) {
-            Uri uri = getUriFromResId(context, resId.intValue());
-            String imageMediaType = context.getContentResolver().getType(uri);
-            DongTaiContent dongTaiContent = this;
-            this.imagearray.add(uri.toString());
-//            try {
-//                WebRequest.sendPostImageRequest("/dongtai/image/upload", new HashMap<>(), uri, imageMediaType, new Function<HashMap<String, Object>, Void>() {
-//                    @Override
-//                    public Void apply(HashMap<String, Object> stringObjectHashMap) {
-//                        dongTaiContent.imagearray.add(getUriFromResId(context, resId.intValue()).toString());
-//                        return null;
-//                    }
-//                });
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
+    public DongTaiContent(HashMap<String, Object> hashMap) {
+        if (hashMap.containsKey("id")) {
+            id = (int) hashMap.get("id");
+        }
+        if (hashMap.containsKey("author__name")) {
+            publisher = (String) hashMap.get("author__name");
+        }
+        if (hashMap.containsKey("author__image")) {
+            headimg = (String) hashMap.get("author__image");
+        }
+        if (hashMap.containsKey("created_time")) {
+            time = (String) hashMap.get("created_time");
+        }
+        if (hashMap.containsKey("content")) {
+            content = (String) hashMap.get("content");
+        }
+        if (hashMap.containsKey("num_thumbs")) {
+            like = (int) hashMap.get("num_thumbs");
+        }
+        if (hashMap.containsKey("num_comments")) {
+            comment = (int) hashMap.get("num_comments");
+        }
+        if (hashMap.containsKey("num_collects")) {
+            collect = (int) hashMap.get("num_collects");
+        }
+        if (hashMap.containsKey("title")) {
+            title = (String) hashMap.get("title");
+        }
+        if (hashMap.containsKey("url_images")) {
+            urlImages = (String) hashMap.get("url_images");
+        }
+        if (hashMap.containsKey("position")) {
+            position = (String) hashMap.get("position");
+        }
+
+        // 处理图片数组
+        if (hashMap.containsKey("url_images")) {
+            String urlImages = (String) hashMap.get("url_images");
+            if (urlImages != null && !urlImages.isEmpty()) {
+                String[] imageUrls = urlImages.split(",");
+                for (String imageUrl : imageUrls) {
+                    imagearray.add(imageUrl);
+                }
+            }
         }
     }
 
@@ -77,7 +97,7 @@ public class DongTaiContent implements Serializable {
         );
     }
 
-    public DongTaiContent(String publisher, int headimg, String time, String content, int like, int comment, int collect, String title, ArrayList<String> imagearray) {
+    public DongTaiContent(String publisher, String headimg, String time, String content, int like, int comment, int collect, String title, ArrayList<String> imagearray) {
         this.publisher = publisher;
         this.headimg = headimg;
         this.time = time;

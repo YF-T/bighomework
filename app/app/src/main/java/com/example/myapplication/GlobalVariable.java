@@ -28,6 +28,7 @@ public class GlobalVariable {
     private SharedPreferences mPreferences;
     private Context context;
     private String sharedPrefFile ="com.example.android.globalvariable";
+    static public String defaultImage = "/image/user/abc.jpg";
 
     private GlobalVariable() {//构造函数私有
     }
