@@ -29,6 +29,7 @@ public class DongTaiContent implements Serializable {
     public String title;
     public String urlImages;
     public String position;
+    public String tag;
 
     public DongTaiContent() {
         publisher = "Tanyifan";
@@ -72,8 +73,14 @@ public class DongTaiContent implements Serializable {
         if (hashMap.containsKey("url_images")) {
             urlImages = (String) hashMap.get("url_images");
         }
+        if (hashMap.containsKey("tag")) {
+            tag = (String) hashMap.get("tag");
+        }
         if (hashMap.containsKey("position")) {
             position = (String) hashMap.get("position");
+        }
+        if (position.equals("点击获取用户位置")) {
+            position = "unknown position";
         }
 
         // 处理图片数组

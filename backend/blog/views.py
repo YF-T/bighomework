@@ -10,16 +10,14 @@ import json
 
 @login_required
 def create(request):
-    title = request.POST.get('title', '')
-    author = request.user
-    content = request.POST.get('content', '')
-    tag = request.POST.get('tag', '')
-    url_images = request.POST.get('url_images', '')
-    info = {'title': title,
-            'author': author,
-            'content': content,
-            'tag': tag, 
-            'url_images': url_images}
+    info = {
+        'title': request.POST.get('title', ''),
+        'author': request.user,
+        'content': request.POST.get('content', ''),
+        'tag': request.POST.get('tag', ''),
+        'position': request.POST.get('position', ''),
+        'url_images': request.POST.get('url_images', '')
+    }
     dongtai, flag = CreateDongTai(info)
     if flag:
         response = JsonResponse({'status': 'success'})
@@ -30,7 +28,7 @@ def create(request):
     return response
 
 def open(request):
-    dongtai_id = request.GET.get('id', '')
+    dongtai_id = int(request.GET.get('id', ''))
     user, flag = check_login(request)
     if not flag:
         # 用户没有登录或登录过期时，把user设置成一个伪类，这样可以实现所有的评论/博客都不点赞

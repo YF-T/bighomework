@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 import static android.app.Activity.RESULT_OK;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,6 +33,7 @@ public class GeRenZhongXinFragment extends Fragment {
     private RelativeLayout register;
     private RelativeLayout logout;
     private RelativeLayout mystar;
+    private RelativeLayout setting;
     private ImageView user_image;
     private TextView user_name;
     private TextView user_email;
@@ -57,6 +61,7 @@ public class GeRenZhongXinFragment extends Fragment {
         register = view.findViewById(R.id.register);
         logout = view.findViewById(R.id.logout);
         mystar = view.findViewById(R.id.mystar);
+        setting = view.findViewById(R.id.setting);
         user_image = view.findViewById(R.id.user_image);
         user_name = view.findViewById(R.id.user_name);
         user_email = view.findViewById(R.id.user_email);
@@ -115,6 +120,25 @@ public class GeRenZhongXinFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText writecomment = new EditText(getContext());
+                writecomment.setText(WebRequest.baseUrl);
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("请输入评论");
+                builder.setView(writecomment);
+                builder.setPositiveButton("提交", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        WebRequest.baseUrl = writecomment.getText().toString();
+                        dialogInterface.dismiss();
+                    }
+                });
+                builder.setNegativeButton("返回", null);
+                builder.show();
+            }
+        });
 
         changeLayoutByStatus(view);
 
@@ -133,11 +157,6 @@ public class GeRenZhongXinFragment extends Fragment {
             user_name.setText(GlobalVariable.get("username", "default"));
             user_email.setText(GlobalVariable.get("useremail", "default"));
             WebRequest.setImageByUrl(user_image, GlobalVariable.get("userimageurl", "/image/user/abc.jpg"));
-//            WebRequest.downloadImage(GlobalVariable.get("userimageurl", "/image/user/abc.jpg"), bitmap -> {
-//                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-//                user_image.setImageBitmap(bitmap);
-//                return null;
-//            });
         } else {
             personal_info.setVisibility(View.GONE);
             message.setVisibility(View.GONE);

@@ -140,6 +140,8 @@ public class adddongtai extends AppCompatActivity {
 
         content.setText(dongTaiContent.content);
         title.setText(dongTaiContent.title);
+        publisher.setText(GlobalVariable.get("username", "default"));
+        WebRequest.setImageByUrl(headimg, GlobalVariable.get("userimageurl", GlobalVariable.defaultImage));
         for(String base64: dongTaiContent.imagearray) {
             uriArrayList.add(base64ToUri(base64).toString());
         }
@@ -422,7 +424,7 @@ public class adddongtai extends AppCompatActivity {
 
         DongTaiContent dongTaiContent = new DongTaiContent(publisher.getText().toString() , GlobalVariable.defaultImage,
                 dateFormat.format(date), content.getText().toString(), 0, 0, 0,
-                title.getText().toString(), uriArrayList);
+                title.getText().toString(), urlArrayList);
 
         Intent intent2 = new Intent(adddongtai.this, MainActivity.class);
         intent2.putExtra("result", dongTaiContent);

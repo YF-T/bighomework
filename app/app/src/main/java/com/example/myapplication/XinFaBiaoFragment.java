@@ -96,12 +96,7 @@ public class XinFaBiaoFragment extends Fragment {
             @Override
             public void onActivityResult(ActivityResult result) {
                 if(result.getResultCode() == RESULT_OK) {
-                    Log.d("Recieve", "1");
-                    DongTaiContent dongTaiContent = (DongTaiContent) result.getData().getSerializableExtra("result");
-                    dongTaiContents.add(0, dongTaiContent);
-                    adapter.notifyItemInserted(0);
-                    recyclerView.getLayoutManager().scrollToPosition(0);
-                    Log.d("Recieve", dongTaiContent.publisher);
+                    searchDongTai();
                 }
             }
         });
@@ -109,11 +104,18 @@ public class XinFaBiaoFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        searchDongTai();
+    }
+
     public void initDongTaiContents() {
-        dongTaiContents.add(
-                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "14:00 Mar 23rd",
-                        "盛典即将开启，让世界更美。", 1,2,3,"微博盛典",
-                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage))));
+//        dongTaiContents.add(
+//                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "14:00 Mar 23rd",
+//                        "盛典即将开启，让世界更美。", 1,2,3,"微博盛典",
+//                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage))));
 //        dongTaiContents.add(
 //                new DongTaiContent("FrantGuo", R.drawable.touxiang, "15:25 Feb 25th",
 //                        "感谢徐工集团的大力支持！\n体验很好，下次还来！", 7,10,2, "徐工集团拜访记",
@@ -141,13 +143,19 @@ public class XinFaBiaoFragment extends Fragment {
             WebRequest.sendGetRequest("/dongtai/search", args, hashMap -> {
                 dongTaiContents.clear();
                 try {
-                    ArrayList<Object> arrayList = JsonUtil.jsonArrayToArrayList(new JSONArray(hashMap.get("dongtais")));
+                    ArrayList<Object> arrayList = JsonUtil.jsonArrayToArrayList((JSONArray) hashMap.get("dongtais_time"));
                     for (Object o: arrayList) {
-                        HashMap<String, Object> dongtaiarg = JsonUtil.jsonObjectToHashMap((JSONObject) o);
+                        dongTaiContents.add(new DongTaiContent((HashMap<String, Object>) o));
                     }
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
                 return null;
             });
         } catch (IOException e) {

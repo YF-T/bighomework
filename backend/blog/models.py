@@ -34,6 +34,7 @@ def CreateDongTai(info: dict):
     # 加入用户
     dongtai.author = info['author']
     dongtai.url_images = info['url_images']
+    dongtai.position = info['position']
     # 调用当前时间，调试时检验一下是否出错
     dongtai.created_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     dongtai.browse = 0
@@ -310,6 +311,7 @@ def GetCommentsByDongTai(dongtai: DongTai):
     return dongtai.comments.order_by('-created_time'), True
 
 def GetCommentById(myid: int):
+    myid = int(myid)
     try:
         comment = Comment.objects.get(id = myid)
         return comment, True
