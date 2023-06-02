@@ -45,6 +45,14 @@ def GetUserById(myid: int):
         return "errors", False
     
 
+def GetUserFollower(user: User):
+    index = ['id','name','description','image']
+    followings = list(user.followings.all().values(*index))
+    for following in followings:
+        following['image_url'] = '/image/' + following['image']
+        following.pop('image')
+    return followings, True
+
 def GetUserFollowStatus(reader: User, author: User):
     return reader.followings.filter(id = author.id).exists()
 

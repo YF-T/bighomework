@@ -1,7 +1,10 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class dongtai extends AppCompatActivity {
 
@@ -26,6 +30,10 @@ public class dongtai extends AppCompatActivity {
     public TextView collect;
     public LinearLayout all;
     public TextView title;
+
+    private RecyclerView recyclerView;
+    private CommentAdapter commentAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +52,7 @@ public class dongtai extends AppCompatActivity {
         collect = findViewById(R.id.collect);
         all = findViewById(R.id.all);
         title = findViewById(R.id.title);
+        recyclerView = findViewById(R.id.comment_items);
 
         headimg.setImageResource(dongTaiContent.headimg);
 
@@ -55,7 +64,38 @@ public class dongtai extends AppCompatActivity {
         collect.setText(String.format("收藏(%d)", dongTaiContent.collect));
         title.setText(String.format("# %s", dongTaiContent.title));
         ChangeContentImage(dongTaiContent.imagearray);
+
+        commentAdapter = new CommentAdapter(getComments());
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(commentAdapter);
+
+        Context context = this;
+        headimg.setClickable(true);
+        headimg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, PersonalHomepageActivity.class);
+                startActivity(intent);
+            }
+        });
     }
+
+    private List<CommentContent> getComments() {
+        List<CommentContent> comments = new ArrayList<>();
+
+        // 添加两三条评论到列表中
+        CommentContent comment1 = new CommentContent("John", "Great post!");
+        CommentContent comment2 = new CommentContent("Emma", "I agree with you.");
+        CommentContent comment3 = new CommentContent("Michael", "Well written!");
+
+        comments.add(comment1);
+        comments.add(comment2);
+        comments.add(comment3);
+
+        return comments;
+    }
+
 
     public void ChangeContentImage(ArrayList<String> imagearray) {
         contentimg.removeAllViews();//清空子视图 防止原有的子视图影响
@@ -66,6 +106,11 @@ public class dongtai extends AppCompatActivity {
             GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount);//行数
             GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1
             SquareImageView imageView = new SquareImageView(contentimg.getContext());
+//            WebRequest.downloadImage(imagearray.get(i), bitmap -> {
+//                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
+//                imageView.setImageBitmap(bitmap);
+//                return null;
+//            });
             imageView.setImageURI(Uri.parse(imagearray.get(i)));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));

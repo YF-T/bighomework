@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/simsun" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/msyhbd" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/msyh" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/msyhl" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/stxingka" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/sthupo" />
+</font-family>
+<!-- 所涉及字体依次为：
+ 宋体
+ 微软雅黑（共三种，字体粗细不同）
+ 华文行楷
+ 华文琥珀
+-->

@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ class MessageViewHolder extends RecyclerView.ViewHolder {
     public TextView contentTextView;
     public TextView timeTextView;
 
-    public LinearLayout item_message;
+    public ConstraintLayout item_message;
 
     public MessageViewHolder(@NonNull View itemView) {
         super(itemView);

@@ -110,6 +110,20 @@
 
                 </GridLayout>
 
+                <Spinner
+                    android:id="@+id/gettag"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:tooltipText="tag"
+                    android:entries="@array/tags" />
+
+                <Button
+                    android:id="@+id/getposition"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="点击获取用户位置"/>
+
+
             </LinearLayout>
 
         </LinearLayout>

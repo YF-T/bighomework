@@ -16,7 +16,7 @@
     <item
         android:id="@+id/daodu"
         android:icon="@drawable/baseline_book_24"
-        android:title="导读"/>
+        android:title="关注"/>
 
     <item
         android:id="@+id/wode"

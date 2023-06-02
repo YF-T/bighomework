@@ -9,10 +9,10 @@ import re
 
 from user.models import User, GetUserById, CreateUser, GetUserByName
 
-class Blog(models.Model):
+class DongTai(models.Model):
     title = models.CharField(max_length = 100)  # 文章标题
-    author = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='blogs')  # 文章作者
-    created_time = models.CharField(max_length = 20)  # 发表时间，在初始化blog时生成
+    author = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='dongtais')  # 文章作者
+    created_time = models.CharField(max_length = 20)  # 发表时间，在初始化dongtai时生成
     content = models.TextField()  # 文章内容，暂定字符串形式输入，markdown格式
     tag = models.CharField(max_length = 20)  # 文章对应的标签，暂定一个
     thumbing_users = models.ManyToManyField('user.User', related_name = 'favorites')
@@ -20,98 +20,102 @@ class Blog(models.Model):
     browse = models.IntegerField()  # 浏览次数
     num_thumbs = models.IntegerField()  # 点赞数
     num_comments = models.IntegerField()  # 评论数
-    cover_image = models.ImageField(upload_to='blogcover/', height_field = None, width_field = None)   # 存储封面图，可以指定图片大小
+    num_collects = models.IntegerField()  # 收藏数
+    url_images = models.TextField()  # 该条对应的图片
 
 
-def CreateBlog(info: dict):
-    blog = Blog()
-    blog.title = info['title']
-    blog.author = info['author']
-    blog.content = info['content']
-    blog.tag = info['tag']
+def CreateDongTai(info: dict):
+    dongtai = DongTai()
+    dongtai.title = info['title']
+    dongtai.author = info['author']
+    dongtai.content = info['content']
+    dongtai.tag = info['tag']
     # 加入用户
-    blog.author = info['author']
+    dongtai.author = info['author']
+    dongtai.url_images = info['url_images']
     # 调用当前时间，调试时检验一下是否出错
-    blog.created_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    blog.browse = 0
-    blog.num_thumbs = 0
-    blog.num_comments = 0  # 初始浏览、点赞、评论数都为0
-    blog.cover_image = info['image']
-    blog.save()
-    for user in blog.author.followers.all():
-        SendBlogMessage(blog.author, user, blog)
-    return blog, True
+    dongtai.created_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    dongtai.browse = 0
+    dongtai.num_thumbs = 0
+    dongtai.num_comments = 0  # 初始浏览、点赞、评论数都为0
+    dongtai.num_collects = 0  # 初始浏览、点赞、评论数都为0
+    dongtai.save()
+    for user in dongtai.author.followers.all():
+        SendDongTaiMessage(dongtai.author, user, dongtai)
+    return dongtai, True
 
-def GetBlogById(myid: int):
+def GetDongTaiById(myid: int):
     try:
-        blog = Blog.objects.get(id = myid)
-        return blog, True
+        dongtai = DongTai.objects.get(id = myid)
+        return dongtai, True
     except:
         return "errors", False
 
-def UpdateBlogBrowse(blog: Blog):
-    blog.browse += 1
-    blog.save()
+def UpdateDongTaiBrowse(dongtai: DongTai):
+    dongtai.browse += 1
+    dongtai.save()
     return 'success', True
     # 每次访问一篇文章，就给该文章的访问量+1
 
-def GetBlogApproveStatus(blog: Blog, user: User):
+def GetDongTaiApproveStatus(dongtai: DongTai, user: User):
     # if user is None:
     #     return False
-    return blog.thumbing_users.filter(id = user.id).exists()
+    return dongtai.thumbing_users.filter(id = user.id).exists()
 
-def GetUserFollowStatus(blog: Blog, user: User):
+def GetUserFollowStatus(dongtai: DongTai, user: User):
     if not isinstance(user, User):
         return False
-    return user.followings.filter(id = blog.author.id).exists()
+    return user.followings.filter(id = dongtai.author.id).exists()
 
-def OpenBlog(myid: int, user: User):
-    myblog, flag = GetBlogById(myid)
+def OpenDongTai(myid: int, user: User):
+    mydongtai, flag = GetDongTaiById(myid)
     if flag:
-        UpdateBlogBrowse(myblog)  # 更新博客访问量
-        blog_info = {
-            'id': myblog.id,
-            'title': myblog.title, 
-            'author': myblog.author.name,
-            'author_image': myblog.author.image.url,
-            'author_id': myblog.author.id,
-            'tag' : myblog.tag,
-            'created_time': myblog.created_time,
-            'content': myblog.content,
-            'num_thumbing_users': myblog.num_thumbs,
-            'browse': myblog.browse,
-            'num_comment': myblog.num_comments,
-            'bool_thumb': GetBlogApproveStatus(myblog, user),
-            'bool_follow': GetUserFollowStatus(myblog, user),
+        UpdateDongTaiBrowse(mydongtai)  # 更新博客访问量
+        dongtai_info = {
+            'id': mydongtai.id,
+            'title': mydongtai.title, 
+            'author': mydongtai.author.name,
+            'author_image': mydongtai.author.image.url,
+            'author_id': mydongtai.author.id,
+            'tag' : mydongtai.tag,
+            'created_time': mydongtai.created_time,
+            'content': mydongtai.content,
+            'num_thumbing_users': mydongtai.num_thumbs,
+            'browse': mydongtai.browse,
+            'num_comment': mydongtai.num_comments,
+            'num_collect': mydongtai.num_collects,
+            'bool_thumb': GetDongTaiApproveStatus(mydongtai, user),
+            'bool_follow': GetUserFollowStatus(mydongtai, user),
+            'url_images': mydongtai.url_images
         }
-        return blog_info, True
+        return dongtai_info, True
     else: 
-        return "cannot open blog", False
+        return "cannot open dongtai", False
 
 def SearchUserFavorites(user: User):
     user = GetUserById(user.id)
-    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','cover_image']
+    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images']
     favorites = list(user.favorites.all().values(*index))
     return favorites, True
     
-def SearchUserBlogs(user: User):
+def SearchUserDongTais(user: User):
     user = GetUserById(user.id)
-    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','cover_image']
-    blogs = list(user.blogs.all().values(*index))
-    return blogs, True
+    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images']
+    dongtais = list(user.dongtais.all().values(*index))
+    return dongtais, True
 
 
-def SortBlog(sequence: str, data: pd.DataFrame):
+def SortDongTai(sequence: str, data: pd.DataFrame):
     if data.empty:
         return []
-    # data = pd.DataFrame(blogs)  # 转化为DataFrame形式，方便排序
+    # data = pd.DataFrame(dongtais)  # 转化为DataFrame形式，方便排序
     data = data.sort_values(by = sequence, ascending = False)
     # 按照给定的sequence排序，默认为降序
     return data
 
 '''
 在全部博客中搜索，key为搜索词，tag为给定的标签
-返回结果为一个blog的list，每条blog包括：
+返回结果为一个dongtai的list，每条dongtai包括：
 'id': <博客id，由数据库自动生成>，
 'title': <文章标题>，
 'author': <作者>，
@@ -121,11 +125,12 @@ def SortBlog(sequence: str, data: pd.DataFrame):
 'num_supporting_users'：<点赞数量>，
 'browse'：<阅读数>，
 'num_comments'：<评论数>
+'num_collects'：<收藏数>
 '''
-def SearchBlog(key: str, tag: str, type: str, user: User):
-    blogs = []
+def SearchDongTai(key: str, tag: str, type: str, user: User):
+    dongtais = []
     temptag = tag
-    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','cover_image']
+    index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images']
     if temptag == '':
         temptag = 'all'
     tpkey = ['default', 'default', 'default', 'default', 'default', 'default']
@@ -153,16 +158,16 @@ def SearchBlog(key: str, tag: str, type: str, user: User):
             tpkey[i] = tpkey[0]
     # 确定原始集合
     if type == 'all':
-        origin_set = Blog.objects.all()
-    elif type == 'myblog':
+        origin_set = DongTai.objects.all()
+    elif type == 'mydongtai':
         user = GetUserById(user.id)[0]
-        origin_set = user.blogs.all()
+        origin_set = user.dongtais.all()
     elif type == 'favorite':
         user = GetUserById(user.id)[0]
         origin_set = user.favorites.all()
     try:
         if temptag != 'all':  # 先进行标签筛选
-            blogs = origin_set.values(*index).\
+            dongtais = origin_set.values(*index).\
             filter(Q(tag = temptag, title__icontains=tpkey[0]) | Q(tag = temptag, author__name__icontains=tpkey[0]) | \
                    Q(tag = temptag, title__icontains=tpkey[1]) | Q(tag = temptag, author__name__icontains=tpkey[1]) | \
                    Q(tag = temptag, title__icontains=tpkey[2]) | Q(tag = temptag, author__name__icontains=tpkey[2]) | \
@@ -170,7 +175,7 @@ def SearchBlog(key: str, tag: str, type: str, user: User):
                    Q(tag = temptag, title__icontains=tpkey[4]) | Q(tag = temptag, author__name__icontains=tpkey[4]) | \
                    Q(tag = temptag, title__icontains=tpkey[5]) | Q(tag = temptag, author__name__icontains=tpkey[5]))
         else:  # 标签不筛选，返回全部
-            blogs = origin_set.values(*index).\
+            dongtais = origin_set.values(*index).\
             filter(Q(title__icontains=tpkey[0]) | Q(author__name__icontains=tpkey[0]) | \
                    Q(title__icontains=tpkey[1]) | Q(author__name__icontains=tpkey[1]) | \
                    Q(title__icontains=tpkey[2]) | Q(author__name__icontains=tpkey[2]) | \
@@ -178,39 +183,38 @@ def SearchBlog(key: str, tag: str, type: str, user: User):
                    Q(title__icontains=tpkey[4]) | Q(author__name__icontains=tpkey[4]) | \
                    Q(title__icontains=tpkey[5]) | Q(author__name__icontains=tpkey[5]))
     except:
-        return False, "cannot find blogs according to tag"
-    blogs_new = list(blogs)
-    if blogs_new == []:
+        return False, "cannot find dongtais according to tag"
+    dongtais_new = list(dongtais)
+    if dongtais_new == []:
         return True, "empty list"
-    for blog_new in blogs_new:
-        blog_new['author_name'] = blog_new['author__name']
-        blog_new['author_image'] = '/image/' + blog_new['author__image']
-        blog_new['cover_image'] = '/image/' + blog_new['cover_image']
-    data = pd.DataFrame(blogs_new)
+    for dongtai_new in dongtais_new:
+        dongtai_new['author_name'] = dongtai_new['author__name']
+        dongtai_new['author_image'] = '/image/' + dongtai_new['author__image']
+    data = pd.DataFrame(dongtais_new)
     try:
         # 四种排序都需要测试并返回，返回的均为dataframe格式，在这转成list格式
-        blogs_time = SortBlog('created_time', data).to_dict('records')
-        blogs_thumb = SortBlog('num_thumbs', data).to_dict('records')
-        blogs_browse = SortBlog('browse', data).to_dict('records')
-        blogs_comment = SortBlog('num_comments', data).to_dict('records')
-        return True, [blogs_time, blogs_thumb, blogs_browse, blogs_comment]
+        dongtais_time = SortDongTai('created_time', data).to_dict('records')
+        dongtais_thumb = SortDongTai('num_thumbs', data).to_dict('records')
+        dongtais_browse = SortDongTai('browse', data).to_dict('records')
+        dongtais_comment = SortDongTai('num_comments', data).to_dict('records')
+        return True, [dongtais_time, dongtais_thumb, dongtais_browse, dongtais_comment]
     except:
         return False, "sort error"
 
-def ApproveBlog(blog: Blog, user: User):
-    if blog.thumbing_users.filter(id = user.id).exists():
-        blog.thumbing_users.remove(user)
-        blog.num_thumbs -= 1
-        blog.save()
+def ApproveDongTai(dongtai: DongTai, user: User):
+    if dongtai.thumbing_users.filter(id = user.id).exists():
+        dongtai.thumbing_users.remove(user)
+        dongtai.num_thumbs -= 1
+        dongtai.save()
         return 'cancel approval', True
     else:
-        blog.thumbing_users.add(user)
-        blog.num_thumbs += 1
-        blog.save()
+        dongtai.thumbing_users.add(user)
+        dongtai.num_thumbs += 1
+        dongtai.save()
         return 'approve', True
 
 
-def InitBlogDatabase():
+def InitDongTaiDatabase():
     info = {'name':'default', 
             'password':'37a8eec1ce19687d132fe29051dca629d164e2c4958ba141d5f4133a33f0688f', 
             'age': 0, 
@@ -226,46 +230,39 @@ def InitBlogDatabase():
         'tag': 'life_experience',
         'image': File(open('abc.jpg', 'rb'))
     }
-    CreateBlog(info)
-
-@receiver(models.signals.post_delete, sender=Blog)
-def DeleteBlogFile(sender, instance, **kwargs):
-    # 清除文件，因为delete方法在删除时不会自动清除文件
-    if instance.cover_image:
-        if os.path.isfile(instance.cover_image.path):
-            os.remove(instance.cover_image.path)
+    CreateDongTai(info)
 
 
-class BlogImage(models.Model):
-    image = models.ImageField(upload_to='blog/', height_field = None, width_field = None)
-    blog = models.ForeignKey('Blog', on_delete=models.CASCADE, null=True)
+class DongTaiImage(models.Model):
+    image = models.ImageField(upload_to='dongtai/', height_field = None, width_field = None)
+    dongtai = models.ForeignKey('DongTai', on_delete=models.CASCADE, null=True)
 
-def CreateBlogImage(image):
-    blogimage = BlogImage()
-    blogimage.image = image
-    blogimage.save()
-    return blogimage, True
+def CreateDongTaiImage(image):
+    dongtaiimage = DongTaiImage()
+    dongtaiimage.image = image
+    dongtaiimage.save()
+    return dongtaiimage, True
 
-def AddBlogImageToBlog(blog: Blog, images: models.QuerySet):
-    images.update(blog=blog)
+def AddDongTaiImageToDongTai(dongtai: DongTai, images: models.QuerySet):
+    images.update(dongtai=dongtai)
     return 'success', True
 
-def GetBlogImageById(myid: int):
+def GetDongTaiImageById(myid: int):
     try:
-        blogimage = BlogImage.objects.get(id = myid)
-        return blogimage, True
+        dongtaiimage = DongTaiImage.objects.get(id = myid)
+        return dongtaiimage, True
     except:
         return "errors", False
  
-def GetBlogImagesByIds(myids: list):
+def GetDongTaiImagesByIds(myids: list):
     try:
-        blogimages = BlogImage.objects.filter(id__in=myids)
-        return blogimages, True
+        dongtaiimages = DongTaiImage.objects.filter(id__in=myids)
+        return dongtaiimages, True
     except:
         return "errors", False
         
-@receiver(models.signals.post_delete, sender=BlogImage)
-def DeleteBlogImageFile(sender, instance, **kwargs):
+@receiver(models.signals.post_delete, sender=DongTaiImage)
+def DeleteDongTaiImageFile(sender, instance, **kwargs):
     # 清除文件，因为delete方法在删除时不会自动清除文件
     if instance.image:
         if os.path.isfile(instance.image.path):
@@ -277,7 +274,7 @@ class Comment(models.Model):
     content = models.TextField()  # 内容
     created_time = models.CharField(max_length = 20) # 创建时间
     author = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='comments')
-    blog = models.ForeignKey('Blog', on_delete=models.CASCADE, related_name='comments')
+    dongtai = models.ForeignKey('DongTai', on_delete=models.CASCADE, related_name='comments')
     num_thumbs = models.IntegerField()  # 点赞数
     thumbing_users = models.ManyToManyField('user.User', related_name='Approved_comments')
 
@@ -286,12 +283,12 @@ def CreateComment(info: dict):
     comment.content = info['content']
     comment.created_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     comment.author = info['author']
-    comment.blog = info['blog']
+    comment.dongtai = info['dongtai']
     comment.num_thumbs = 0
     comment.save()
-    comment.blog.num_comments += 1
-    comment.blog.save()
-    SendCommentMessage(comment.author, comment.blog.author, comment.blog, comment)
+    comment.dongtai.num_comments += 1
+    comment.dongtai.save()
+    SendCommentMessage(comment.author, comment.dongtai.author, comment.dongtai, comment)
     return comment, True
 
 def ApproveComment(comment: Comment, user: User):
@@ -306,8 +303,8 @@ def ApproveComment(comment: Comment, user: User):
         comment.save()
         return 'approve', True
     
-def GetCommentsByBlog(blog: Blog):
-    return blog.comments.order_by('-created_time'), True
+def GetCommentsByDongTai(dongtai: DongTai):
+    return dongtai.comments.order_by('-created_time'), True
 
 def GetCommentById(myid: int):
     try:
@@ -326,10 +323,10 @@ def InitCommentDatabase():
     
     
 class UserMessage(models.Model):
-    TYPE = (('C', 'Comment'), ('B', 'Blog'))
+    TYPE = (('C', 'Comment'), ('B', 'DongTai'))
     from_user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='send_message') # 发送用户
     to_user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='recieve_message') # 接收用户
-    blog = models.ForeignKey('blog.Blog', on_delete=models.CASCADE, related_name='about_message', null=True) # 相关博客
+    dongtai = models.ForeignKey('blog.DongTai', on_delete=models.CASCADE, related_name='about_message', null=True) # 相关博客
     message = models.TextField()
     created_time = models.CharField(max_length = 20)
     new = models.BooleanField(default=True)
@@ -341,37 +338,37 @@ def SendMessage(info):
     usermessage.save()
     return usermessage, True
     
-def SendCommentMessage(from_user, to_user, blog, comment):
+def SendCommentMessage(from_user, to_user, dongtai, comment):
     info = {
         'from_user': from_user, 
         'to_user': to_user, 
-        'blog': blog, 
+        'dongtai': dongtai, 
         'message_type': 'Comment'
     }
-    info['message'] = '用户“%s”评论了您的文章《%s》: \n%s' % (from_user.name, blog.title, comment.content)
+    info['message'] = '用户“%s”评论了您的文章《%s》: \n%s' % (from_user.name, dongtai.title, comment.content)
     return SendMessage(info)
     
-def SendBlogMessage(from_user, to_user, blog):
+def SendDongTaiMessage(from_user, to_user, dongtai):
     info = {
         'from_user': from_user, 
         'to_user': to_user, 
-        'blog': blog, 
-        'message_type': 'Blog'
+        'dongtai': dongtai, 
+        'message_type': 'DongTai'
     }
-    info['message'] = '您关注的用户“%s”新发表了一篇文章《%s》，快去看看吧！' % (from_user.name, blog.title)
+    info['message'] = '您关注的用户“%s”新发表了一篇文章《%s》，快去看看吧！' % (from_user.name, dongtai.title)
     return SendMessage(info)
 
 def GetUserRecieveMessage(user):
     user = GetUserById(user.id)[0]
-    index = ['id','from_user__name','from_user__image','blog__title','blog__tag','blog__id','new','message','message_type','created_time']
+    index = ['id','from_user__name','from_user__image','dongtai__title','dongtai__tag','dongtai__id','new','message','message_type','created_time']
     messages = list(user.recieve_message.all().order_by('-created_time').values(*index))
     for message in messages:
         message['user'] = message.pop('from_user__name')
         myurl = '/image/user/' + message.pop('from_user__image')
         message['user_image'] = myurl.replace('user/user', 'user')
-        message['blog_title'] = message.pop('blog__title')
-        message['blog_tag'] = message.pop('blog__tag')
-        message['blog_id'] = message.pop('blog__id')
+        message['dongtai_title'] = message.pop('dongtai__title')
+        message['dongtai_tag'] = message.pop('dongtai__tag')
+        message['dongtai_id'] = message.pop('dongtai__id')
     user.recieve_message.update(new=False)
     return messages, True
 
@@ -405,6 +402,19 @@ def GetMessageList(user,chater):
         message['receiver'] = message.pop('receiver')
         message['message'] = message.pop('message')
         message['created_time'] = message.pop('created_time')
-    print(MessageList)
     return MessageList, True
+
+def GetChaterList(user):
+    index = ['id','sender','receiver','message','created_time']
+    # print(list(ChatMessage.objects.all()))
+    # 查询sender=user时的receiver集合
+    sender_receiver_set = ChatMessage.objects.filter(sender=user).values_list('receiver', flat=True)
+
+    # 查询receiver=user时的sender集合
+    receiver_sender_set = ChatMessage.objects.filter(receiver=user).values_list('sender', flat=True)
+
+    # 合并两个集合
+    result_set = list(set(sender_receiver_set) | set(receiver_sender_set))
+
+    return result_set, True
         

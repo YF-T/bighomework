@@ -105,43 +105,50 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_marginVertical="3dp"
             android:background="@drawable/corner2">
 
-            <TextView
-                android:id="@+id/comment"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="7dp"
-                android:text="评论(1)"
-                android:textSize="16dp"
-                android:gravity="center"
-                android:textColor="#666666"
-                android:background="#E8E8E8"/>
-            <TextView
-                android:id="@+id/like"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="7dp"
-                android:text="赞(100)"
-                android:textSize="16dp"
-                android:gravity="center"
-                android:textColor="#666666"
-                android:background="#E8E8E8"/>
-            <TextView
-                android:id="@+id/collect"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="7dp"
-                android:text="收藏(9)"
-                android:textSize="16dp"
-                android:gravity="center"
-                android:textColor="#666666"
-                android:background="#E8E8E8"/>
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/comment"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="7dp"
+                    android:text="评论(1)"
+                    android:textSize="16dp"
+                    android:gravity="center"
+                    android:textColor="#666666"
+                    android:background="#E8E8E8"/>
+                <TextView
+                    android:id="@+id/like"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="7dp"
+                    android:text="赞(100)"
+                    android:textSize="16dp"
+                    android:gravity="center"
+                    android:textColor="#666666"
+                    android:background="#E8E8E8"/>
+                <TextView
+                    android:id="@+id/collect"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_margin="7dp"
+                    android:text="收藏(9)"
+                    android:textSize="16dp"
+                    android:gravity="center"
+                    android:textColor="#666666"
+                    android:background="#E8E8E8"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

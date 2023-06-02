@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         GlobalVariable.getInstance().setContext(this);
+        WebRequest.context = this;
 
         // 页面切换
         bottomNavigationView = findViewById(R.id.bottomnavigation);
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     case 1:
                         return new HuaTiAndDaoDuAndWoDeFragment("话题");
                     case 2:
-                        return new HuaTiAndDaoDuAndWoDeFragment("导读");
+                        return new FollowerAndFolloweeFragment();
                     case 3:
                         return new GeRenZhongXinFragment();
                 }

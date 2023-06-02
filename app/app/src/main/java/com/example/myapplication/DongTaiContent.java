@@ -10,15 +10,19 @@ import android.net.Uri;
 import androidx.annotation.AnyRes;
 import androidx.annotation.NonNull;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.function.Function;
 
 public class DongTaiContent implements Serializable {
+    public int id;
     public String publisher;
     public int headimg;
     public String time;
     public String content;
-    public ArrayList<String> imagearray = new ArrayList<String>();
+    public ArrayList<String> imagearray = new ArrayList<String>(); // 上传image
     public int like;
     public int comment;
     public int collect;
@@ -46,7 +50,21 @@ public class DongTaiContent implements Serializable {
         this.imagearray = new ArrayList<String>();
         this.title = title;
         for(Integer resId: imagearray) {
-            this.imagearray.add(getUriFromResId(context, resId.intValue()).toString());
+            Uri uri = getUriFromResId(context, resId.intValue());
+            String imageMediaType = context.getContentResolver().getType(uri);
+            DongTaiContent dongTaiContent = this;
+            this.imagearray.add(uri.toString());
+//            try {
+//                WebRequest.sendPostImageRequest("/dongtai/image/upload", new HashMap<>(), uri, imageMediaType, new Function<HashMap<String, Object>, Void>() {
+//                    @Override
+//                    public Void apply(HashMap<String, Object> stringObjectHashMap) {
+//                        dongTaiContent.imagearray.add(getUriFromResId(context, resId.intValue()).toString());
+//                        return null;
+//                    }
+//                });
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
         }
     }
 
