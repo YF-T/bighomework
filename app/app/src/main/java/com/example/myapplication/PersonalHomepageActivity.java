@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,6 +32,8 @@ public class PersonalHomepageActivity extends AppCompatActivity {
     // 关注数需要动态更新
     private RecyclerView recyclerView;
     private DongTaiAdapter dongTaiAdapter;
+    private Button followOrUnfollow;
+    private Button sendMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,8 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         followingTextView = findViewById(R.id.following);
         followerTextView = findViewById(R.id.follower);
         recyclerView = findViewById(R.id.recyclerview);
+        followOrUnfollow = findViewById(R.id.follow);
+        sendMessage = findViewById(R.id.send_message);
 
         // Set the user information
         imageView.setImageResource(R.drawable.touxiang);
@@ -52,6 +59,34 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         dongTaiAdapter = new DongTaiAdapter(this, getDongTaiData());
         recyclerView.setAdapter(dongTaiAdapter);
+
+        sendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean iflogin = false;
+                GlobalVariable.get("iflogin", iflogin);
+                if(!iflogin){
+                    return;
+                }
+                // 如果已经登录，则进行跳转
+                // 跳转到私信界面，还没连接
+                String username = "Default";
+                GlobalVariable.get("username", username);
+                Intent intent = new Intent(v.getContext(), ChatActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("sender", usernameTextView.toString());
+                bundle.putString("username", username);
+                intent.putExtras(bundle);
+                v.getContext().startActivity(intent);
+            }
+        });
+
+        followOrUnfollow.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                // 结合当前状态判定是关注还是取关，需要调用
+            }
+        });
 
         try {
             WebRequest.sendGetRequest("/user/foreigninfo", new HashMap<>(), new Function<HashMap<String, Object>, Void>(){
