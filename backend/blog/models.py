@@ -140,12 +140,13 @@ def SortDongTai(sequence: str, data: pd.DataFrame):
 'num_comments'：<评论数>
 'num_collects'：<收藏数>
 '''
-def SearchDongTai(key: str, tag: str, type: str, user: User):
+def SearchDongTai(key: str, tag: str, sortkey: str, iffollow: str, type: str, user: User):
     dongtais = []
     temptag = tag
+    key = str(key)
     index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images','position','content']
     if temptag == '':
-        temptag = 'all'
+        temptag = '所有'
     tpkey = ['default', 'default', 'default', 'default', 'default', 'default']
     if key == None or key == '' or len(key) == key.count(' '):  # 纯空格等于全部搜索
         key = ''
@@ -175,28 +176,30 @@ def SearchDongTai(key: str, tag: str, type: str, user: User):
     elif type == 'mydongtai':
         user = GetUserById(user.id)[0]
         origin_set = user.dongtais.all()
-    elif type == 'favorite':
+    elif type == 'collect':
         user = GetUserById(user.id)[0]
-        origin_set = user.favorites.all()
+        origin_set = user.becollect.all()
     try:
-        if temptag != 'all':  # 先进行标签筛选
+        if temptag != '所有':  # 先进行标签筛选
             dongtais = origin_set.values(*index).\
-            filter(Q(tag = temptag, title__icontains=tpkey[0]) | Q(tag = temptag, author__name__icontains=tpkey[0]) | \
-                   Q(tag = temptag, title__icontains=tpkey[1]) | Q(tag = temptag, author__name__icontains=tpkey[1]) | \
-                   Q(tag = temptag, title__icontains=tpkey[2]) | Q(tag = temptag, author__name__icontains=tpkey[2]) | \
-                   Q(tag = temptag, title__icontains=tpkey[3]) | Q(tag = temptag, author__name__icontains=tpkey[3]) | \
-                   Q(tag = temptag, title__icontains=tpkey[4]) | Q(tag = temptag, author__name__icontains=tpkey[4]) | \
-                   Q(tag = temptag, title__icontains=tpkey[5]) | Q(tag = temptag, author__name__icontains=tpkey[5]))
+            filter(Q(tag = temptag, title__icontains=tpkey[0]) | Q(tag = temptag, author__name__icontains=tpkey[0]) | Q(tag = temptag, content__icontains=tpkey[0]) | \
+                   Q(tag = temptag, title__icontains=tpkey[1]) | Q(tag = temptag, author__name__icontains=tpkey[1]) | Q(tag = temptag, content__icontains=tpkey[1]) | \
+                   Q(tag = temptag, title__icontains=tpkey[2]) | Q(tag = temptag, author__name__icontains=tpkey[2]) | Q(tag = temptag, content__icontains=tpkey[2]) | \
+                   Q(tag = temptag, title__icontains=tpkey[3]) | Q(tag = temptag, author__name__icontains=tpkey[3]) | Q(tag = temptag, content__icontains=tpkey[3]) | \
+                   Q(tag = temptag, title__icontains=tpkey[4]) | Q(tag = temptag, author__name__icontains=tpkey[4]) | Q(tag = temptag, content__icontains=tpkey[4]) | \
+                   Q(tag = temptag, title__icontains=tpkey[5]) | Q(tag = temptag, author__name__icontains=tpkey[5]) | Q(tag = temptag, content__icontains=tpkey[5]))
         else:  # 标签不筛选，返回全部
             dongtais = origin_set.values(*index).\
-            filter(Q(title__icontains=tpkey[0]) | Q(author__name__icontains=tpkey[0]) | \
-                   Q(title__icontains=tpkey[1]) | Q(author__name__icontains=tpkey[1]) | \
-                   Q(title__icontains=tpkey[2]) | Q(author__name__icontains=tpkey[2]) | \
-                   Q(title__icontains=tpkey[3]) | Q(author__name__icontains=tpkey[3]) | \
-                   Q(title__icontains=tpkey[4]) | Q(author__name__icontains=tpkey[4]) | \
-                   Q(title__icontains=tpkey[5]) | Q(author__name__icontains=tpkey[5]))
+            filter(Q(title__icontains=tpkey[0]) | Q(author__name__icontains=tpkey[0]) | Q(content__icontains=tpkey[0]) | \
+                   Q(title__icontains=tpkey[1]) | Q(author__name__icontains=tpkey[1]) | Q(content__icontains=tpkey[1]) | \
+                   Q(title__icontains=tpkey[2]) | Q(author__name__icontains=tpkey[2]) | Q(content__icontains=tpkey[2]) | \
+                   Q(title__icontains=tpkey[3]) | Q(author__name__icontains=tpkey[3]) | Q(content__icontains=tpkey[3]) | \
+                   Q(title__icontains=tpkey[4]) | Q(author__name__icontains=tpkey[4]) | Q(content__icontains=tpkey[4]) | \
+                   Q(title__icontains=tpkey[5]) | Q(author__name__icontains=tpkey[5]) | Q(content__icontains=tpkey[5]))
     except:
         return False, "cannot find dongtais according to tag"
+    if iffollow == 'follow': 
+        dongtais = dongtais.filter(author__in=user.followings.all())
     dongtais_new = list(dongtais)
     if dongtais_new == []:
         return True, "empty list"
@@ -204,13 +207,14 @@ def SearchDongTai(key: str, tag: str, type: str, user: User):
         dongtai_new['author_name'] = dongtai_new['author__name']
         dongtai_new['author_image'] = '/image/' + dongtai_new['author__image']
     data = pd.DataFrame(dongtais_new)
+    sortkeydict = {'新发表': 'created_time', 
+                   '回复多': 'num_comments',
+                   '热度高': 'num_thumbs', 
+                   '收藏多': 'num_collect'}
     try:
         # 四种排序都需要测试并返回，返回的均为dataframe格式，在这转成list格式
-        dongtais_time = SortDongTai('created_time', data).to_dict('records')
-        dongtais_thumb = SortDongTai('num_thumbs', data).to_dict('records')
-        dongtais_browse = SortDongTai('browse', data).to_dict('records')
-        dongtais_comment = SortDongTai('num_comments', data).to_dict('records')
-        return True, [dongtais_time, dongtais_thumb, dongtais_browse, dongtais_comment]
+        dongtais = SortDongTai(sortkeydict[sortkey], data).to_dict('records')
+        return True, dongtais
     except:
         return False, "sort error"
 

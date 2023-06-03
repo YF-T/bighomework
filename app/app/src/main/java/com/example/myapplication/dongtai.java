@@ -150,7 +150,7 @@ public class dongtai extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            collect.setText(String.format("点赞(%d)", dongTaiContent.collect));
+                            collect.setText(String.format("收藏(%d)", dongTaiContent.collect));
                             if (dongTaiContent.bool_collect) {
                                 collect.setTextColor(Color.BLUE);
                             } else {

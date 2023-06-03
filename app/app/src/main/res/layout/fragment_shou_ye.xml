@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="1212"
+            android:text=""
             android:textSize="20dp"/>
 
         <Button
@@ -63,41 +63,32 @@
 
     </LinearLayout>
 
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tablayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabIndicatorFullWidth="false">
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="新发表"/>
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="回复多"/>
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="热门"/>
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="关注"/>
-
-    </com.google.android.material.tabs.TabLayout>
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/leafviewpager2"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview"
+        android:paddingHorizontal="10dp"
+        android:paddingTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:layout_constraintTop_toBottomOf="@id/tablayout"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/newdongtai"
+        android:background="@color/grey"/>
+
+    <LinearLayout
+        android:id="@+id/newdongtai"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/newdongtaibutton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="发送动态"
+            android:textSize="18dp"
+            android:layout_weight="0"/>
+
+    </LinearLayout>
 
 </LinearLayout>

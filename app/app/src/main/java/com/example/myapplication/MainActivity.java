@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     BottomNavigationView bottomNavigationView;
     ViewPager2 viewPager2;
-    public XinFaBiaoFragment xinFaBiaoFragment;
+    public ShouYeFragment shouYeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState, outPersistentState);
     }
 
-    public void setXinFaBiaoFragment(XinFaBiaoFragment xinFaBiaoFragment) {
-        this.xinFaBiaoFragment = xinFaBiaoFragment;
+    public void setShouYeFragment(ShouYeFragment shouYeFragment) {
+        this.shouYeFragment = shouYeFragment;
     }
 }
