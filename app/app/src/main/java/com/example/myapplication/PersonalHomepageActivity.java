@@ -88,23 +88,40 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         followOrUnfollow.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                boolean iflogin = false;
+                GlobalVariable.get("iflogin", iflogin);
+                if(!iflogin){
+                    return;
+                }
                 // 结合当前状态判定是关注还是取关，需要调用
-                boolean followed = false;
-                if(followed){
-                    // 已经关注则取关
+                String txt = followOrUnfollow.getText().toString();
+                if(txt.equals("关注")){
+                    // 点击表示从未关注变为关注
                     followOrUnfollow.setText("取关");
                 }
                 else{
                     followOrUnfollow.setText("关注");
                 }
+                HashMap<String, String> inputValues = getAllInputValues();
+                try {
+                    WebRequest.sendPostRequest("/user/follow", inputValues, new Function<HashMap<String, Object>, Void>() {
+                        @Override
+                        public Void apply(HashMap<String, Object> stringObjectHashMap) {
+                            return null;
+                        }
+                    });
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                // 之后还要刷新一下
             }
         });
 
         banButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                boolean banned = false;
-                if(banned){
+                String txt = banButton.getText().toString();
+                if(txt.equals("取消屏蔽")){
                     // 已经拉黑，则从黑名单中移出
                     banButton.setText("将TA屏蔽");
                 }
@@ -114,6 +131,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
             }
         });
 
+        // 直接抄了userinformationactivity，大概率抄的比较冗余，能跑就行
         try {
             HashMap<String, String> args = new HashMap<>();
             args.put("username", getIntent().getStringExtra("username"));
@@ -190,10 +208,6 @@ public class PersonalHomepageActivity extends AppCompatActivity {
     private HashMap<String, String> getAllInputValues() {
         HashMap<String, String> inputValues = new HashMap<>();
         inputValues.put("username", usernameTextView.getText().toString());
-        inputValues.put("description", descriptionTextView.getText().toString());
-        inputValues.put("following", followingTextView.getText().toString());
-        inputValues.put("follower", followerTextView.getText().toString());
-        inputValues.put("uid", "");
         return inputValues;
     }
 
