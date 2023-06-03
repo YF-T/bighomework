@@ -29,6 +29,7 @@ def create(request):
 
 def open(request):
     dongtai_id = int(request.GET.get('id', ''))
+    print(dongtai_id)
     user, flag = check_login(request)
     if not flag:
         # 用户没有登录或登录过期时，把user设置成一个伪类，这样可以实现所有的评论/博客都不点赞
@@ -100,10 +101,24 @@ def searchdongtais(request):
         response = JsonResponse({'status': 'fail'})
         response.status_code = 200
     return response
+    
+@login_required    
+def searchuserdongtais(request):
+    username = request.GET.get('username', '')
+    user = GetUserByName(username)[0]
+    print(user)
+    dongtais, flag = SearchUserDongTais(user)
+    if flag:
+        response = JsonResponse({'status': 'success', 'dongtais': dongtais})
+        response.status_code = 200
+    else:
+        response = JsonResponse({'status': 'fail'})
+        response.status_code = 200
+    return response
 
 @login_required
 def approvedongtai(request):
-    id = request.POST.get('id', '')
+    id = int(request.POST.get('id', ''))
     dongtai, flag = GetDongTaiById(id)
     if not flag:
         response = JsonResponse({'status': 'dongtai not found'})
@@ -115,6 +130,23 @@ def approvedongtai(request):
     response = JsonResponse({'status': 'success',
                              'bool_support': bool_support,
                              'num_thumbing_users': dongtai.num_thumbs})
+    response.status_code = 200
+    return response
+    
+@login_required
+def collectdongtai(request):
+    id = int(request.POST.get('id', ''))
+    dongtai, flag = GetDongTaiById(id)
+    if not flag:
+        response = JsonResponse({'status': 'dongtai not found'})
+        response.status_code = 400
+        return response
+    collect, flag = CollectDongTai(dongtai, request.user)
+    bool_collect = True if collect == 'approve' else False
+
+    response = JsonResponse({'status': 'success',
+                             'bool_collect': bool_collect,
+                             'num_collect_users': dongtai.num_collects})
     response.status_code = 200
     return response
 

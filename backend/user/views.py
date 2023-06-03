@@ -128,29 +128,32 @@ def getfollowings(request):  # 返回用户主页的个人信息
 
 @login_required
 def showothersinfo(request):
+    id = request.POST.get('username', '')
+    print(id)
+    author, flag = GetUserByName(id)
+    myurl = author.image.url
+    if not ('/image/user' in myurl):
+        myurl = '/image/user' + myurl[6:]
+    myurl = myurl.replace('user/user', 'user')
+    info = {
+        'name': author.name,
+        'age': author.age,
+        'sex': author.sex,
+        'identity': author.identity,
+        'description': author.description,
+        'image': myurl,
+        'following': author.followings.count(),
+        'follower': author.followers.count(),
+    }
+    response = JsonResponse({'status': True, 'info': info})
+    response.status_code = 200
+    return response
     try:
-        id = request.POST.get('id', '')
-        author, flag = GetUserById(id)
-        myurl = author.image.url
-        if not ('/image/user' in myurl):
-            myurl = '/image/user' + myurl[6:]
-        myurl = myurl.replace('user/user', 'user')
-        info = {
-            'name': author.name,
-            'age': author.age,
-            'sex': author.sex,
-            'identity': author.identity,
-            'description': author.description,
-            'image': myurl
-        }
-        response = JsonResponse({'status': True, 'info': info})
-        response.status_code = 200
-        return response
+        pass
     except:
         response = JsonResponse({'status': True, 'info': 'error'})
         response.status_code = 200
         return response
-
 
 @login_required
 def tobeupdatedinfo(request):  # 返回用户主页的个人信息

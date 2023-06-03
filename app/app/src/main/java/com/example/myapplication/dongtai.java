@@ -8,6 +8,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -78,7 +80,13 @@ public class dongtai extends AppCompatActivity {
         time.setText(dongTaiContent.time);
         comment.setText(String.format("评论(%d)", dongTaiContent.comment));
         like.setText(String.format("点赞(%d)", dongTaiContent.like));
+        if (dongTaiContent.bool_thumb) {
+            like.setTextColor(Color.BLUE);
+        }
         collect.setText(String.format("收藏(%d)", dongTaiContent.collect));
+        if (dongTaiContent.bool_collect) {
+            like.setTextColor(Color.BLUE);
+        }
         title.setText(String.format("# %s", dongTaiContent.title));
         tag.setText(dongTaiContent.tag);
         position.setText(dongTaiContent.position);
@@ -101,11 +109,60 @@ public class dongtai extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, PersonalHomepageActivity.class);
+                intent.putExtra("username", dongTaiContent.publisher);
                 startActivity(intent);
             }
         });
         comment.setOnClickListener(view -> {
             writeComment(view);
+        });
+        like.setOnClickListener(view -> {
+            HashMap<String, String> args = new HashMap<>();
+            args.put("id", Integer.toString(dongTaiContent.id));
+            try {
+                WebRequest.sendPostRequest("/dongtai/support", args, hashMap -> {
+                    dongTaiContent.like = (int) hashMap.get("num_thumbing_users");
+                    dongTaiContent.bool_thumb = (boolean) hashMap.get("bool_support");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            like.setText(String.format("点赞(%d)", dongTaiContent.like));
+                            if (dongTaiContent.bool_thumb) {
+                                like.setTextColor(Color.BLUE);
+                            } else {
+                                like.setTextColor(Color.parseColor("#666666"));
+                            }
+                        }
+                    });
+                    return null;
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        collect.setOnClickListener(view -> {
+            HashMap<String, String> args = new HashMap<>();
+            args.put("id", Integer.toString(dongTaiContent.id));
+            try {
+                WebRequest.sendPostRequest("/dongtai/collect", args, hashMap -> {
+                    dongTaiContent.collect = (int) hashMap.get("num_collect_users");
+                    dongTaiContent.bool_collect = (boolean) hashMap.get("bool_collect");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            collect.setText(String.format("点赞(%d)", dongTaiContent.collect));
+                            if (dongTaiContent.bool_collect) {
+                                collect.setTextColor(Color.BLUE);
+                            } else {
+                                collect.setTextColor(Color.parseColor("#666666"));
+                            }
+                        }
+                    });
+                    return null;
+                });
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
@@ -167,6 +224,7 @@ public class dongtai extends AppCompatActivity {
     }
 
     public void writeComment(View view) {
+        Loading loading = new Loading(this);
         EditText writecomment = new EditText(this);
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("请输入评论");
@@ -187,6 +245,7 @@ public class dongtai extends AppCompatActivity {
                             public void run() {
                                 commentAdapter.notifyItemChanged(0);
                                 comment.setText(String.format("评论(%d)", hashMap.get("num_comment")));
+                                loading.dismiss();
                             }
                         });
                         return null;
@@ -195,6 +254,7 @@ public class dongtai extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
                 dialogInterface.dismiss();
+                loading.show();
             }
         });
         builder.setNegativeButton("返回", null);

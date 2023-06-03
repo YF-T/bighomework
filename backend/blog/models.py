@@ -16,7 +16,9 @@ class DongTai(models.Model):
     content = models.TextField()  # 文章内容，暂定字符串形式输入，markdown格式
     tag = models.CharField(max_length = 20)  # 文章对应的标签，暂定一个
     thumbing_users = models.ManyToManyField('user.User', related_name = 'favorites')
-       # 点赞这篇文章的用户列表（避免重复点赞），文章存入用户的收藏列表
+       # 点赞这篇文章的用户列表（避免重复点赞）
+    collect_users = models.ManyToManyField('user.User', related_name = 'becollect')
+       # 收藏这篇文章的用户列表（避免重复收藏），文章存入用户的收藏列表
     browse = models.IntegerField()  # 浏览次数
     num_thumbs = models.IntegerField()  # 点赞数
     num_comments = models.IntegerField()  # 评论数
@@ -63,6 +65,11 @@ def GetDongTaiApproveStatus(dongtai: DongTai, user: User):
     # if user is None:
     #     return False
     return dongtai.thumbing_users.filter(id = user.id).exists()
+    
+def GetDongTaiCollectStatus(dongtai: DongTai, user: User):
+    # if user is None:
+    #     return False
+    return dongtai.collect_users.filter(id = user.id).exists()
 
 def GetUserFollowStatus(dongtai: DongTai, user: User):
     if not isinstance(user, User):
@@ -87,6 +94,7 @@ def OpenDongTai(myid: int, user: User):
             'num_comment': mydongtai.num_comments,
             'num_collect': mydongtai.num_collects,
             'bool_thumb': GetDongTaiApproveStatus(mydongtai, user),
+            'bool_collect': GetDongTaiCollectStatus(mydongtai, user),
             'bool_follow': GetUserFollowStatus(mydongtai, user),
             'url_images': mydongtai.url_images, 
             'position': mydongtai.position, 
@@ -97,15 +105,15 @@ def OpenDongTai(myid: int, user: User):
         return "cannot open dongtai", False
 
 def SearchUserFavorites(user: User):
-    user = GetUserById(user.id)
+    user = GetUserById(user.id)[0]
     index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images','position','content']
-    favorites = list(user.favorites.all().values(*index))
+    favorites = list(user.favorites.all().order_by("-created_time").values(*index))
     return favorites, True
     
 def SearchUserDongTais(user: User):
-    user = GetUserById(user.id)
+    user = GetUserById(user.id)[0]
     index = ['id','title','author_id','author__name','author__image','tag','created_time','num_thumbs','browse','num_comments','num_collects','url_images','position','content']
-    dongtais = list(user.dongtais.all().values(*index))
+    dongtais = list(user.dongtais.all().order_by("-created_time").values(*index))
     return dongtais, True
 
 
@@ -214,6 +222,18 @@ def ApproveDongTai(dongtai: DongTai, user: User):
     else:
         dongtai.thumbing_users.add(user)
         dongtai.num_thumbs += 1
+        dongtai.save()
+        return 'approve', True
+        
+def CollectDongTai(dongtai: DongTai, user: User):
+    if dongtai.collect_users.filter(id = user.id).exists():
+        dongtai.collect_users.remove(user)
+        dongtai.num_collects -= 1
+        dongtai.save()
+        return 'cancel approval', True
+    else:
+        dongtai.collect_users.add(user)
+        dongtai.num_collects += 1
         dongtai.save()
         return 'approve', True
 

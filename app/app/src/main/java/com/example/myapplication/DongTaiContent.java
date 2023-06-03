@@ -30,6 +30,10 @@ public class DongTaiContent implements Serializable {
     public String urlImages;
     public String position;
     public String tag;
+    public boolean bool_thumb;
+    public boolean bool_collect;
+    public boolean bool_follow;
+
 
     public DongTaiContent() {
         publisher = "Tanyifan";
@@ -81,6 +85,15 @@ public class DongTaiContent implements Serializable {
         }
         if (position.equals("点击获取用户位置")) {
             position = "unknown position";
+        }
+        if (hashMap.containsKey("bool_thumb")) {
+            bool_thumb = (boolean) hashMap.get("bool_thumb");
+        }
+        if (hashMap.containsKey("bool_collect")) {
+            bool_collect = (boolean) hashMap.get("bool_collect");
+        }
+        if (hashMap.containsKey("bool_follow")) {
+            bool_follow = (boolean) hashMap.get("bool_follow");
         }
 
         // 处理图片数组
