@@ -68,8 +68,8 @@ def checklogin(request):
 
 @login_required
 def followauthor(request):
-    id = request.POST.get('id', '')
-    author, flag = GetUserById(id)  # 待关注的博客作者
+    id = request.POST.get('username', '')
+    author, flag = GetUserByName(id)  # 待关注的博客作者
     if not flag:
         response = JsonResponse({'status': 'author not found'})
         response.status_code = 200

@@ -298,15 +298,13 @@ id：通过路径传输
 
 状态码都是200
 成功：
->>
-状态码：200 {'status': 'success'} 
+>>状态码：200 {'status': 'success'} 
 {
 'status': 'success', 
 'bool_support': <是否点赞>, 
 'num_thumbing_users'：<点赞数量>
 }
 jwt过期/失效：
->>
 
 {'status': 'jwt error'}
 失败：
@@ -491,7 +489,7 @@ dict{'id': <关注用户id>,
 
 >
 
-id：被关注的用户的id
+username：被关注的用户的username
 
 - curl例子：
 

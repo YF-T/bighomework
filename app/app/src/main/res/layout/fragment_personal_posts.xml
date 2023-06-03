@@ -7,18 +7,25 @@
     <LinearLayout
         android:id="@+id/user_info"
         android:layout_width="match_parent"
-        android:layout_height="260dp"
+        android:layout_height="280dp"
         android:background="@drawable/backimg"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
+        <Button
+            android:id="@+id/banButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="5dp"
+            android:backgroundTint="@color/tint_blue"
+            android:text="将TA屏蔽" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            android:layout_marginTop="20dp"
             app:srcCompat="@drawable/touxiang" />
 
         <TextView
