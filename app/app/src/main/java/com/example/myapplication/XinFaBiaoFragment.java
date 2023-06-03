@@ -135,6 +135,7 @@ public class XinFaBiaoFragment extends Fragment {
     }
 
     public void searchDongTai() {
+        Loading loading = new Loading(getContext());
         HashMap<String, String> args = new HashMap<>();
         args.put("key", "");
         args.put("tag", "");
@@ -153,6 +154,7 @@ public class XinFaBiaoFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        loading.dismiss();
                         adapter.notifyDataSetChanged();
                     }
                 });
@@ -161,5 +163,6 @@ public class XinFaBiaoFragment extends Fragment {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        loading.show();
     }
 }

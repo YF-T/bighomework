@@ -37,6 +37,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
     private Button sendMessage;
     private ArrayList<DongTaiContent> dongTaiContents;
     private Button banButton;
+    private int fans;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean iflogin = false;
-                GlobalVariable.get("iflogin", iflogin);
+                iflogin = GlobalVariable.get("iflogin", iflogin);
                 if(!iflogin){
                     return;
                 }
@@ -88,25 +89,34 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         followOrUnfollow.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                boolean iflogin = false;
-                GlobalVariable.get("iflogin", iflogin);
+                boolean iflogin = true;
+                iflogin = GlobalVariable.get("iflogin", iflogin);
                 if(!iflogin){
                     return;
-                }
-                // 结合当前状态判定是关注还是取关，需要调用
-                String txt = followOrUnfollow.getText().toString();
-                if(txt.equals("关注")){
-                    // 点击表示从未关注变为关注
-                    followOrUnfollow.setText("取关");
-                }
-                else{
-                    followOrUnfollow.setText("关注");
                 }
                 HashMap<String, String> inputValues = getAllInputValues();
                 try {
                     WebRequest.sendPostRequest("/user/follow", inputValues, new Function<HashMap<String, Object>, Void>() {
                         @Override
                         public Void apply(HashMap<String, Object> stringObjectHashMap) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if((boolean) stringObjectHashMap.get("bool_follow")){
+                                        // 点击表示从未关注变为关注
+                                        followOrUnfollow.setText("取关");
+                                        fans += 1;
+                                        String follower = "粉丝：" + Integer.toString(fans);
+                                        followerTextView.setText(follower);
+                                    }
+                                    else{
+                                        followOrUnfollow.setText("关注");
+                                        fans -= 1;
+                                        String follower = "粉丝：" + Integer.toString(fans);
+                                        followerTextView.setText(follower);
+                                    }
+                                }
+                            });
                             return null;
                         }
                     });
@@ -151,8 +161,21 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                         String username = (String) info.get("name");
                         String description = (String) info.get("description");
                         String image = (String) info.get("image");
+                        fans = (int) info.get("follower");
                         String following = "关注：" + Integer.toString((int) info.get("following"));
                         String follower = "粉丝：" + Integer.toString((int) info.get("follower"));
+                        String followOrUnfollowtext;
+                        String banbuttontext;
+                        if ((boolean) info.get("bool_follow")) {
+                            followOrUnfollowtext = "取关";
+                        } else {
+                            followOrUnfollowtext = "关注";
+                        }
+                        if ((boolean) info.get("bool_ban")) {
+                            banbuttontext = "取消屏蔽";
+                        } else {
+                            banbuttontext = "屏蔽TA";
+                        }
 
                         // Update the UI with the retrieved user information
                         runOnUiThread(new Runnable() {
@@ -162,6 +185,8 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                                 descriptionTextView.setText(description);
                                 followingTextView.setText(following);
                                 followerTextView.setText(follower);
+                                followOrUnfollow.setText(followOrUnfollowtext);
+                                banButton.setText(banbuttontext);
                                 WebRequest.downloadImage(image, bitmap -> {
                                     // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
                                     // 是抄的UserInformationActivity，这个代码很像只能返回默认头像的样子……

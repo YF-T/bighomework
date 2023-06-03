@@ -22,6 +22,7 @@ public class GlobalVariable {
      * useremail: String, 用户邮箱
      * jwt: String, 用户登录令牌
      * userimageurl: String, 用户头像的url
+     * baseurl: String，服务器的IP
      */
 
     private static GlobalVariable mInstance = new GlobalVariable();//程序启动时立即创建单例

@@ -69,6 +69,7 @@ def checklogin(request):
 @login_required
 def followauthor(request):
     id = request.POST.get('username', '')
+    print(id)
     author, flag = GetUserByName(id)  # 待关注的博客作者
     if not flag:
         response = JsonResponse({'status': 'author not found'})
@@ -135,6 +136,7 @@ def showothersinfo(request):
     if not ('/image/user' in myurl):
         myurl = '/image/user' + myurl[6:]
     myurl = myurl.replace('user/user', 'user')
+    user, flag = GetUserById(request.user.id)
     info = {
         'name': author.name,
         'age': author.age,
@@ -144,6 +146,8 @@ def showothersinfo(request):
         'image': myurl,
         'following': author.followings.count(),
         'follower': author.followers.count(),
+        'bool_follow': user.followings.filter(id=author.id).exists(),
+        'bool_ban': user.bannings.filter(id=author.id).exists(),
     }
     response = JsonResponse({'status': True, 'info': info})
     response.status_code = 200

@@ -23,5 +23,22 @@
         <item>随手拍摄</item>
         <item>其他</item>
     </string-array>
+    <string-array name="searchtags">
+        <item>所有</item>
+        <item>校园资讯</item>
+        <item>二手交易</item>
+        <item>随手拍摄</item>
+        <item>其他</item>
+    </string-array>
+    <string-array name="searchorder">
+        <item>新发表</item>
+        <item>回复多</item>
+        <item>热度高</item>
+        <item>收藏多</item>
+    </string-array>
+    <string-array name="searchfollow">
+        <item>所有人</item>
+        <item>仅关注</item>
+    </string-array>
 
 </resources>
