@@ -34,6 +34,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
     private DongTaiAdapter dongTaiAdapter;
     private Button followOrUnfollow;
     private Button sendMessage;
+    private Button banButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerview);
         followOrUnfollow = findViewById(R.id.follow);
         sendMessage = findViewById(R.id.send_message);
+        banButton = findViewById(R.id.banButton);
 
         // Set the user information
         imageView.setImageResource(R.drawable.touxiang);
@@ -85,6 +87,28 @@ public class PersonalHomepageActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
                 // 结合当前状态判定是关注还是取关，需要调用
+                boolean followed = false;
+                if(followed){
+                    // 已经关注则取关
+                    followOrUnfollow.setText("取关");
+                }
+                else{
+                    followOrUnfollow.setText("关注");
+                }
+            }
+        });
+
+        banButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                boolean banned = false;
+                if(banned){
+                    // 已经拉黑，则从黑名单中移出
+                    banButton.setText("将TA屏蔽");
+                }
+                else{
+                    banButton.setText("取消屏蔽");
+                }
             }
         });
 
