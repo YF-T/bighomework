@@ -28,6 +28,7 @@ class User(models.Model):
     image = models.ImageField(upload_to='user/')
     wx_uid = models.CharField(default = '', max_length = 50, blank=True)
     email = models.CharField(default = '', max_length = 40, blank=True)
+    bannings = models.ManyToManyField('User')  # 被用户屏蔽的人
     
 
 def GetUserByName(myname: str):

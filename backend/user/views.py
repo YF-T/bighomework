@@ -678,3 +678,24 @@ def deletediary(request):
         response = JsonResponse({'status': 'error'})
         response.status_code = 200
     return response
+
+@login_required
+def showabnninglist(request):  # 返回“关注的人”列表
+    ich = request.user.id
+    ich, _ = GetUserById(ich)
+    try:
+        length = len(ich.followings.all())
+        if length != 0:
+            index = ['id', 'name', 'identity', 'description', 'image']
+            author_list = ich.followings.values(*index).filter()
+            response = JsonResponse({'status': True, 'list': list(author_list)})
+            response.status_code = 200
+            return response
+        else:
+            response = JsonResponse({'status': True, 'list': []})
+            response.status_code = 200
+            return response
+    except:
+        response = JsonResponse({'status': False, 'list': 'error'})
+        response.status_code = 200
+        return response
