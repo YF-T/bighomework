@@ -63,6 +63,8 @@ public class DongTaiAdapter extends RecyclerView.Adapter<DongTaiViewHolder> {
         holder.like.setText(String.format("点赞(%d)", dongTaiContent.like));
         holder.collect.setText(String.format("收藏(%d)", dongTaiContent.collect));
         holder.title.setText(String.format("# %s", dongTaiContent.title));
+        holder.tag.setText(dongTaiContent.tag);
+        holder.position.setText(dongTaiContent.position);
 
         Markwon markwon = Markwon.builder(inflater.getContext()).build();
         markwon.setMarkdown(holder.content, dongTaiContent.content);
@@ -120,7 +122,8 @@ class DongTaiViewHolder extends RecyclerView.ViewHolder {
 //                imageView.setImageBitmap(bitmap);
 //                return null;
 //            });
-            imageView.setImageURI(Uri.parse(imagearray.get(i)));
+            WebRequest.setImageByUrl(imageView, imagearray.get(i));
+//            imageView.setImageURI(Uri.parse(imagearray.get(i)));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             //由于宽（即列）已经定义权重比例 宽设置为0 保证均分

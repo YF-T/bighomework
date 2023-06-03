@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
@@ -34,6 +35,8 @@ public class PersonalHomepageActivity extends AppCompatActivity {
     private DongTaiAdapter dongTaiAdapter;
     private Button followOrUnfollow;
     private Button sendMessage;
+    private ArrayList<DongTaiContent> dongTaiContents;
+    private Button banButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerview);
         followOrUnfollow = findViewById(R.id.follow);
         sendMessage = findViewById(R.id.send_message);
+        banButton = findViewById(R.id.banButton);
 
         // Set the user information
         imageView.setImageResource(R.drawable.touxiang);
@@ -84,12 +88,54 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         followOrUnfollow.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                boolean iflogin = false;
+                GlobalVariable.get("iflogin", iflogin);
+                if(!iflogin){
+                    return;
+                }
                 // 结合当前状态判定是关注还是取关，需要调用
+                String txt = followOrUnfollow.getText().toString();
+                if(txt.equals("关注")){
+                    // 点击表示从未关注变为关注
+                    followOrUnfollow.setText("取关");
+                }
+                else{
+                    followOrUnfollow.setText("关注");
+                }
+                HashMap<String, String> inputValues = getAllInputValues();
+                try {
+                    WebRequest.sendPostRequest("/user/follow", inputValues, new Function<HashMap<String, Object>, Void>() {
+                        @Override
+                        public Void apply(HashMap<String, Object> stringObjectHashMap) {
+                            return null;
+                        }
+                    });
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                // 之后还要刷新一下
             }
         });
 
+        banButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                String txt = banButton.getText().toString();
+                if(txt.equals("取消屏蔽")){
+                    // 已经拉黑，则从黑名单中移出
+                    banButton.setText("将TA屏蔽");
+                }
+                else{
+                    banButton.setText("取消屏蔽");
+                }
+            }
+        });
+
+        // 直接抄了userinformationactivity，大概率抄的比较冗余，能跑就行
         try {
-            WebRequest.sendGetRequest("/user/foreigninfo", new HashMap<>(), new Function<HashMap<String, Object>, Void>(){
+            HashMap<String, String> args = new HashMap<>();
+            args.put("username", getIntent().getStringExtra("username"));
+            WebRequest.sendPostRequest("/user/foreigninfo", args, new Function<HashMap<String, Object>, Void>(){
                 @Override
                 public Void apply(HashMap<String, Object> response) {
                     if (response != null && (boolean) response.get("status")) {
@@ -105,8 +151,8 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                         String username = (String) info.get("name");
                         String description = (String) info.get("description");
                         String image = (String) info.get("image");
-                        String following = (String) info.get("following");
-                        String follower = (String) info.get("follower");
+                        String following = "关注：" + Integer.toString((int) info.get("following"));
+                        String follower = "粉丝：" + Integer.toString((int) info.get("follower"));
 
                         // Update the UI with the retrieved user information
                         runOnUiThread(new Runnable() {
@@ -116,7 +162,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                                 descriptionTextView.setText(description);
                                 followingTextView.setText(following);
                                 followerTextView.setText(follower);
-                                WebRequest.downloadImage(GlobalVariable.get("userimageurl", "/image/user/abc.jpg"), bitmap -> {
+                                WebRequest.downloadImage(image, bitmap -> {
                                     // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
                                     // 是抄的UserInformationActivity，这个代码很像只能返回默认头像的样子……
                                     imageView.setImageBitmap(bitmap);
@@ -131,20 +177,22 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        searchDongTai();
     }
 
     // Method to generate dummy data for RecyclerView
     private ArrayList<DongTaiContent> getDongTaiData() {
-        ArrayList<DongTaiContent> dongTaiContents = new ArrayList<>();
-        dongTaiContents.add(
-                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "14:00 Mar 23rd",
-                        "盛典即将开启，让世界更美。", 1,2,3,"微博盛典",
-                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage))));
-        dongTaiContents.add(
-                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "15:25 Feb 25th",
-                        "感谢徐工集团的大力支持！\n体验很好，下次还来！", 7,10,2, "徐工集团拜访记",
-                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage,GlobalVariable.defaultImage))));
-        // Add dummy data here
+        dongTaiContents = new ArrayList<>();
+//        dongTaiContents.add(
+//                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "14:00 Mar 23rd",
+//                        "盛典即将开启，让世界更美。", 1,2,3,"微博盛典",
+//                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage))));
+//        dongTaiContents.add(
+//                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "15:25 Feb 25th",
+//                        "感谢徐工集团的大力支持！\n体验很好，下次还来！", 7,10,2, "徐工集团拜访记",
+//                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage,GlobalVariable.defaultImage))));
+//        // Add dummy data here
         return dongTaiContents;
     }
 
@@ -160,11 +208,33 @@ public class PersonalHomepageActivity extends AppCompatActivity {
     private HashMap<String, String> getAllInputValues() {
         HashMap<String, String> inputValues = new HashMap<>();
         inputValues.put("username", usernameTextView.getText().toString());
-        inputValues.put("description", descriptionTextView.getText().toString());
-        inputValues.put("following", followingTextView.getText().toString());
-        inputValues.put("follower", followerTextView.getText().toString());
-        inputValues.put("uid", "");
         return inputValues;
     }
 
+    public void searchDongTai() {
+        HashMap<String, String> args = new HashMap<>();
+        args.put("username", getIntent().getStringExtra("username"));
+        try {
+            WebRequest.sendGetRequest("/dongtai/otheruser/dongtais", args, hashMap -> {
+                dongTaiContents.clear();
+                try {
+                    ArrayList<Object> arrayList = JsonUtil.jsonArrayToArrayList((JSONArray) hashMap.get("dongtais"));
+                    for (Object o: arrayList) {
+                        dongTaiContents.add(new DongTaiContent((HashMap<String, Object>) o));
+                    }
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        dongTaiAdapter.notifyDataSetChanged();
+                    }
+                });
+                return null;
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

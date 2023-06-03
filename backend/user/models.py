@@ -23,10 +23,12 @@ class User(models.Model):
     sex = models.CharField(max_length = 1, choices = SEX)  # 性别
     identity = models.CharField(max_length = 7, choices = IDENTITY)  # 身份类别
     followings = models.ManyToManyField('User', related_name='followers')  # 用户关注的人
+    blacklist = models.ManyToManyField('User', related_name='behate')  # 拉黑
     description = models.CharField(max_length = 200)  # 个人介绍
     image = models.ImageField(upload_to='user/')
     wx_uid = models.CharField(default = '', max_length = 50, blank=True)
     email = models.CharField(default = '', max_length = 40, blank=True)
+    bannings = models.ManyToManyField('User')  # 被用户屏蔽的人
     
 
 def GetUserByName(myname: str):

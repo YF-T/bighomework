@@ -101,6 +101,7 @@ class WebRequest {
                     }
                 }
                 Log.d("url status", result.get("status").toString());
+                Log.d("returndata", result.toString());
                 callback.apply(result);
                 response.close();
             }
@@ -146,6 +147,7 @@ class WebRequest {
                     }
                 }
                 Log.d("url status", result.get("status").toString());
+                Log.d("returndata", result.toString());
                 callback.apply(result);
                 response.close();
             }
@@ -154,6 +156,10 @@ class WebRequest {
 
     // 把url转成Bitmap的函数
     public static void downloadImage(String url, final Function<Bitmap, Void> callback) {
+        if (!url.startsWith("/"))
+            url = "/" + url;
+        if (!url.startsWith("/image"))
+            url = "/image" + url;
         String oldurl = url;
         url = WebRequest.baseUrl + url;
 

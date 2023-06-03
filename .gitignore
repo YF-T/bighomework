@@ -13,6 +13,7 @@
 /app/.externalNativeBuild
 /app/.cxx
 /app/local.properties
+/app/app/release
 
 # Python File
 */__pycache__

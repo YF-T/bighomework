@@ -68,8 +68,8 @@ def checklogin(request):
 
 @login_required
 def followauthor(request):
-    id = request.POST.get('id', '')
-    author, flag = GetUserById(id)  # 待关注的博客作者
+    id = request.POST.get('username', '')
+    author, flag = GetUserByName(id)  # 待关注的博客作者
     if not flag:
         response = JsonResponse({'status': 'author not found'})
         response.status_code = 200
@@ -128,29 +128,32 @@ def getfollowings(request):  # 返回用户主页的个人信息
 
 @login_required
 def showothersinfo(request):
+    id = request.POST.get('username', '')
+    print(id)
+    author, flag = GetUserByName(id)
+    myurl = author.image.url
+    if not ('/image/user' in myurl):
+        myurl = '/image/user' + myurl[6:]
+    myurl = myurl.replace('user/user', 'user')
+    info = {
+        'name': author.name,
+        'age': author.age,
+        'sex': author.sex,
+        'identity': author.identity,
+        'description': author.description,
+        'image': myurl,
+        'following': author.followings.count(),
+        'follower': author.followers.count(),
+    }
+    response = JsonResponse({'status': True, 'info': info})
+    response.status_code = 200
+    return response
     try:
-        id = request.POST.get('id', '')
-        author, flag = GetUserById(id)
-        myurl = author.image.url
-        if not ('/image/user' in myurl):
-            myurl = '/image/user' + myurl[6:]
-        myurl = myurl.replace('user/user', 'user')
-        info = {
-            'name': author.name,
-            'age': author.age,
-            'sex': author.sex,
-            'identity': author.identity,
-            'description': author.description,
-            'image': myurl
-        }
-        response = JsonResponse({'status': True, 'info': info})
-        response.status_code = 200
-        return response
+        pass
     except:
         response = JsonResponse({'status': True, 'info': 'error'})
         response.status_code = 200
         return response
-
 
 @login_required
 def tobeupdatedinfo(request):  # 返回用户主页的个人信息
@@ -675,3 +678,24 @@ def deletediary(request):
         response = JsonResponse({'status': 'error'})
         response.status_code = 200
     return response
+
+@login_required
+def showabnninglist(request):  # 返回“关注的人”列表
+    ich = request.user.id
+    ich, _ = GetUserById(ich)
+    try:
+        length = len(ich.followings.all())
+        if length != 0:
+            index = ['id', 'name', 'identity', 'description', 'image']
+            author_list = ich.followings.values(*index).filter()
+            response = JsonResponse({'status': True, 'list': list(author_list)})
+            response.status_code = 200
+            return response
+        else:
+            response = JsonResponse({'status': True, 'list': []})
+            response.status_code = 200
+            return response
+    except:
+        response = JsonResponse({'status': False, 'list': 'error'})
+        response.status_code = 200
+        return response
