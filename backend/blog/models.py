@@ -3,6 +3,7 @@ from django.db.models import Q
 from django.dispatch import receiver
 from django.core.files import File
 import datetime
+import time
 import pandas as pd
 import os
 import re
@@ -408,8 +409,6 @@ def GetMessageList(user,chater):
     return MessageList, True
 
 def GetChaterList(user):
-    index = ['id','sender','receiver','message','created_time']
-    # print(list(ChatMessage.objects.all()))
     # 查询sender=user时的receiver集合
     sender_receiver_set = ChatMessage.objects.filter(sender=user).values_list('receiver', flat=True)
 
@@ -420,4 +419,12 @@ def GetChaterList(user):
     result_set = list(set(sender_receiver_set) | set(receiver_sender_set))
 
     return result_set, True
-        
+
+def NewMsgTime(user):
+    timelist = ChatMessage.objects.filter(receiver=user).values_list('created_time', flat=True)
+    tlist = list(timelist.order_by('-created_time'))
+    print(tlist)
+    if len(tlist) > 0:
+        last_time = tlist[0]
+        return last_time,True
+    return "nothing",True

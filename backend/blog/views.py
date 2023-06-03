@@ -256,3 +256,15 @@ def getchaterlist(request):
         response = JsonResponse({'status': 'error'})
         response.status_code = 200
     return response
+
+def newmsgtime(request):
+    user = request.POST.get('user', '')
+    last_time,flag = NewMsgTime(user)
+    print(last_time)
+    if flag:
+        response = JsonResponse({'status': 'success', 'last_time':last_time})
+        response.status_code = 200
+    else:
+        response = JsonResponse({'status': 'error'})
+        response.status_code = 200
+    return response

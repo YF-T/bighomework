@@ -46,6 +46,7 @@ urlpatterns = [
     path('chat/send',dongtai_views.sendchatmsg),
     path('chat/msglist',dongtai_views.getmsglist),
     path('chat/chaterlist',dongtai_views.getchaterlist),
+    path('chat/newmsgtime',dongtai_views.newmsgtime),
     path('prescription/create', user_views.createprescription),
     path('prescription/update', user_views.updateprescription),
     path('prescription/prescription', user_views.openprescription),

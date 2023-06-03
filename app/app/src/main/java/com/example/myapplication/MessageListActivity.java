@@ -33,6 +33,9 @@ public class MessageListActivity extends AppCompatActivity {
     private Timer timer;
     private String username;
 
+    private String lastmsgtime = "";
+    private boolean first_created = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +60,7 @@ public class MessageListActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             getchaterList();
+                            newmsgtime();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -105,5 +109,35 @@ public class MessageListActivity extends AppCompatActivity {
         super.onDestroy();
         // 在Activity销毁时取消计时器
         timer.cancel();
+    }
+
+    private void newmsgtime() throws IOException{
+        HashMap<String, String> requestArgs = new HashMap<>();
+        requestArgs.put("user", username);
+        Context context = this;
+        WebRequest.sendPostRequest("/chat/newmsgtime", requestArgs, (result) -> {
+            String status = (String) result.get("status");
+            if(status.equals("success")) {
+                String newtime = (String) result.get("last_time");
+                if (first_created){
+                    first_created = false;
+                    lastmsgtime = newtime;
+                }
+                else{
+                    if (!newtime.equals(lastmsgtime)){
+                        lastmsgtime = newtime;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(context, "您有新的私信消息", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }
+            } else {
+                //no new messages
+            }
+            return null;
+        });
     }
 }
