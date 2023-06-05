@@ -260,4 +260,15 @@ public class dongtai extends AppCompatActivity {
         builder.setNegativeButton("返回", null);
         builder.show();
     }
+    public void shareDongTai(View v){
+        String title = "分享到...";
+        Intent shareIntent = new Intent();
+
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "SHARE");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, content.getText());
+
+        shareIntent.setType("text/plain");
+        startActivity(Intent.createChooser(shareIntent,title));
+    }
 }

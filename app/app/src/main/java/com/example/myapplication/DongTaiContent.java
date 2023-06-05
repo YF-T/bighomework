@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -128,4 +129,5 @@ public class DongTaiContent implements Serializable {
         this.imagearray = imagearray;
         this.title = title;
     }
+
 }
