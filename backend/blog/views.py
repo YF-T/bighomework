@@ -51,6 +51,8 @@ def open(request):
 def search(request):
     key = request.GET.get('key', '')
     tag = request.GET.get('tag', '')
+    sortkey = request.GET.get('sortkey', '')
+    iffollow = request.GET.get('iffollow', '')
     if 'type' in request.GET.keys():
         type = request.GET.get('type', '')
     else:
@@ -60,20 +62,14 @@ def search(request):
         response = JsonResponse({'status': 'jwt error'})
         response.status_code = 200
         return response
-    flag, dongtailist = SearchDongTai(key, tag, type, user)
+    flag, dongtailist = SearchDongTai(key, tag, sortkey, iffollow, type, user)
     if flag and dongtailist != "empty list":
         response = JsonResponse({'status': 'success',
-            'dongtais_time': dongtailist[0],
-            'dongtais_thumb': dongtailist[1],
-            'dongtais_browse': dongtailist[2],
-            'dongtais_comment': dongtailist[3]})
+            'dongtais': dongtailist})
         response.status_code = 200
     elif flag:
         response = JsonResponse({'status': 'success', 
-            'dongtais_time':[],
-            'dongtais_thumb': [],
-            'dongtais_browse': [],
-            'dongtais_comment': []})
+            'dongtais':[]})
         response.status_code = 200
     else:
         response = JsonResponse({'status': 'fail'})
