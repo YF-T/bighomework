@@ -265,8 +265,8 @@ public class dongtai extends AppCompatActivity {
         Intent shareIntent = new Intent();
 
         shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_SUBJECT, "SHARE");
-        shareIntent.putExtra(Intent.EXTRA_TEXT, content.getText());
+        shareIntent.putExtra(Intent.EXTRA_SUBJECT, this.title.getText().toString());
+        shareIntent.putExtra(Intent.EXTRA_TEXT, content.getText().toString());
 
         shareIntent.setType("text/plain");
         startActivity(Intent.createChooser(shareIntent,title));
