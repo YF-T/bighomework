@@ -263,7 +263,7 @@ def InitDongTaiDatabase():
 
 
 class DongTaiImage(models.Model):
-    image = models.ImageField(upload_to='dongtai/', height_field = None, width_field = None)
+    image = models.FileField(upload_to='dongtai/')
     dongtai = models.ForeignKey('DongTai', on_delete=models.CASCADE, null=True)
 
 def CreateDongTaiImage(image):

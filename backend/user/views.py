@@ -198,6 +198,7 @@ def updatemyinfo(request):  # 更新用户个人信息（不包括头像）
         print(password)
         ChangeProfile = request.POST.get('ifChangeImage')
         if ChangeProfile == '1':
+            print("success")
             img = request.FILES['image']  # 参考博客封面图
             info = {
                 'name': request.POST.get('username', ''),
@@ -227,7 +228,7 @@ def updatemyinfo(request):  # 更新用户个人信息（不包括头像）
             response.status_code = 200
             return response
         else:
-            response = JsonResponse({'status': True, 'id': (int)(ich.id)})
+            response = JsonResponse({'status': True, 'id': (int)(ich.id), 'url': GetUserById(ich.id)[0].image.url})
             response.status_code = 200
             return response
     except:

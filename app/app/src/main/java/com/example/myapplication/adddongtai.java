@@ -11,7 +11,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -48,6 +50,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import android.util.Base64;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -99,6 +102,33 @@ public class adddongtai extends AppCompatActivity {
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
+                    }
+                }
+            });
+    public ActivityResultLauncher<String> pickVideo =
+            registerForActivityResult(new ActivityResultContracts.GetMultipleContents(), new ActivityResultCallback<List<Uri>>() {
+                @Override
+                public void onActivityResult(List<Uri> result) {
+                    for(Uri uri: result) {
+                        uriArrayList.add(uri.toString());
+                        Log.d("uri", uri.toString());
+                        String imageMediaType = getContentResolver().getType(uri);
+                        WebRequest.sendPostVideoRequest("/dongtai/image/upload", new HashMap<>(), uri, imageMediaType, adddongtai.this, new Function<HashMap<String, Object>, Void>() {
+                            @Override
+                            public Void apply(HashMap<String, Object> stringObjectHashMap) {
+
+                                //AddContentImage();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Log.d("url", stringObjectHashMap.toString());
+                                        urlArrayList.add((String) stringObjectHashMap.get("url"));
+                                        ChangeContentImage();
+                                    }
+                                });
+                                return null;
+                            }
+                        });
                     }
                 }
             });
@@ -303,17 +333,29 @@ public class adddongtai extends AppCompatActivity {
         contentimg.removeAllViews();//清空子视图 防止原有的子视图影响
         int columnCount = 3;
         int size = urlArrayList.size();
+        if (urlArrayList.size() == 1 && urlArrayList.get(0).endsWith("mp4")) {
+            VideoView videoView = new VideoView(contentimg.getContext());
+            //加载网络视频，记得适配 6.0,7.0,9.0
+            String videoPath = WebRequest.baseUrl + urlArrayList.get(0);
+            videoView.setVideoPath(videoPath);
+
+            videoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            //由于宽（即列）已经定义权重比例 宽设置为0 保证均分
+            ViewGroup.LayoutParams layoutParams = videoView.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            layoutParams.height = 600;
+            videoView.setLayoutParams(layoutParams);
+            contentimg.addView(videoView);
+            videoView.requestFocus();
+            videoView.start();
+            return;
+        }
         //遍历集合 动态添加
         for (int i = 0; i < size; i++) {
             GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount);//行数
             GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1
             SquareImageView imageView = new SquareImageView(contentimg.getContext());
             Log.d("changecontent", urlArrayList.get(i));
-//            WebRequest.downloadImage(urlArrayList.get(i), bitmap -> {
-//                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-//                imageView.setImageBitmap(bitmap);
-//                return null;
-//            });
             WebRequest.setImageByUrl(imageView, urlArrayList.get(i));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -330,50 +372,42 @@ public class adddongtai extends AppCompatActivity {
         addphoto.setImageResource(R.drawable.baseline_add_24);
         addphoto.setScaleType(ImageView.ScaleType.FIT_XY);
         addphoto.setClickable(true);
+//        addphoto.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Log.d("click", "1");
+//                pickMedia.launch("image/*");
+//            }
+//        });
         addphoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("click", "1");
-                pickMedia.launch("image/*");
+                AlertDialog.Builder builder = new AlertDialog.Builder(adddongtai.this);
+                builder.setTitle("选择上传类型")
+                        .setItems(new CharSequence[]{"图片", "视频"}, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int which) {
+                                if (which == 0) {
+                                    // 选择图片
+                                    pickMedia.launch("image/*");
+                                } else if (which == 1) {
+                                    // 选择视频
+                                    if (urlArrayList.size() != 0) {
+                                        Toast.makeText(getApplicationContext(), "不支持图片视频混用", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+                                    pickVideo.launch("video/*");
+                                }
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
             }
         });
-        addphoto.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        //由于宽（即列）已经定义权重比例 宽设置为0 保证均分
-        GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
-        layoutParams.rowSpec=rowSpec;
-        layoutParams.columnSpec=columnSpec;
-        layoutParams.setMargins(2, 2, 2, 2);
-        contentimg.addView(addphoto, layoutParams);
-    }
-    public void AddContentImage() {
-        int columnCount = 3;
-        int size = urlArrayList.size();
-        int i = size - 1;
-        GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount);//行数
-        GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1
-        SquareImageView imageView = new SquareImageView(contentimg.getContext());
-//        Log.d("changecontent", urlArrayList.get(i));
-//        WebRequest.downloadImage(urlArrayList.get(i), bitmap -> {
-//            // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-//            imageView.setImageBitmap(bitmap);
-//            return null;
-//        });
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        //由于宽（即列）已经定义权重比例 宽设置为0 保证均分
-        GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
-        layoutParams.rowSpec=rowSpec;
-        layoutParams.columnSpec=columnSpec;
-        layoutParams.setMargins(2, 2, 2, 2);
-        contentimg.addView(imageView, layoutParams);
 
-        rowSpec = GridLayout.spec(size / columnCount);//行数
-        columnSpec = GridLayout.spec(size % columnCount, 1.0f);//列数 列宽的比例 weight=1
-        Log.d("col",columnSpec.toString());
-        addphoto = new SquareImageView(contentimg.getContext());
         addphoto.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         //由于宽（即列）已经定义权重比例 宽设置为0 保证均分
-        layoutParams = new GridLayout.LayoutParams(new ViewGroup.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
+        GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams(new ViewGroup.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT));
         layoutParams.rowSpec=rowSpec;
         layoutParams.columnSpec=columnSpec;
         layoutParams.setMargins(2, 2, 2, 2);

@@ -1,8 +1,15 @@
 package com.example.myapplication;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,9 +21,12 @@ import android.widget.TextView;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.function.Function;
 
 public class UserInformationActivity extends AppCompatActivity {
@@ -26,6 +36,32 @@ public class UserInformationActivity extends AppCompatActivity {
     private Spinner genderSpinner;
     private Button submitButton;
     private Button backButton;
+    private Bitmap tochange = null;
+    private String type = null;
+
+    public ActivityResultLauncher<String> pickMedia =
+            registerForActivityResult(new ActivityResultContracts.GetMultipleContents(), new ActivityResultCallback<List<Uri>>() {
+                @Override
+                public void onActivityResult(List<Uri> result) {
+                    for(Uri uri: result) {
+                        imageView.setImageURI(uri);
+                        ParcelFileDescriptor parcelFileDescriptor = null;
+                        try {
+                            parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
+                            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                            Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+                            parcelFileDescriptor.close();
+                            tochange = image;
+                            type = getContentResolver().getType(uri);
+                        } catch (FileNotFoundException e) {
+                            throw new RuntimeException(e);
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +117,14 @@ public class UserInformationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // 执行返回按钮点击后的操作
                 finish(); // 结束当前的Activity
+            }
+        });
+
+        imageView.setClickable(true);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pickMedia.launch("image/*");
             }
         });
 
@@ -197,6 +241,18 @@ public class UserInformationActivity extends AppCompatActivity {
     public void onSaveButtonClick(View view) throws IOException {
         // 获取所有输入框的值
         HashMap<String, String> inputValues = getAllInputValues();
+
+        if (tochange != null) {
+            inputValues.put("ifChangeImage", "1");
+            WebRequest.sendPostImageRequest("/user/updatemyinfo", inputValues, tochange, type, new Function<HashMap<String, Object>, Void>() {
+                @Override
+                public Void apply(HashMap<String, Object> stringObjectHashMap) {
+                    GlobalVariable.set("userimageurl", (String) stringObjectHashMap.get("url"));
+                    return null;
+                }
+            });
+            return;
+        }
 
         WebRequest.sendPostRequest("/user/updatemyinfo", inputValues, new Function<HashMap<String, Object>, Void>() {
             @Override

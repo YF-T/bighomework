@@ -20,6 +20,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -199,6 +200,23 @@ public class dongtai extends AppCompatActivity {
         int columnCount = 3;
         int size = imagearray.size();
         //遍历集合 动态添加
+        if (imagearray.size() == 1 && imagearray.get(0).endsWith("mp4")) {
+            VideoView videoView = new VideoView(contentimg.getContext());
+            //加载网络视频，记得适配 6.0,7.0,9.0
+            String videoPath = WebRequest.baseUrl + imagearray.get(0);
+            videoView.setVideoPath(videoPath);
+
+            videoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            //由于宽（即列）已经定义权重比例 宽设置为0 保证均分
+            ViewGroup.LayoutParams layoutParams = videoView.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            layoutParams.height = 600;
+            videoView.setLayoutParams(layoutParams);
+            contentimg.addView(videoView);
+            videoView.requestFocus();
+            videoView.start();
+            return;
+        }
         for (int i = 0; i < size; i++) {
             GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount);//行数
             GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1

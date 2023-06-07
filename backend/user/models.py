@@ -94,7 +94,9 @@ def UpdateUser(id, info):
         print("successfully created profile example")
         # AddProfileToUser(User.objects.filter(id = id)[0], profile)
         User.objects.filter(id = id).update(**info)
-        User.objects.filter(id = id)[0].save()
+        user = GetUserById(id)[0]
+        user.image = profile
+        user.save()
     else:
         User.objects.filter(id = id).update(**info)
     return True
