@@ -24,8 +24,8 @@
 
         <ImageView
             android:id="@+id/avatar_imageview"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="180dp"
+            android:layout_height="180dp"
             android:src="@drawable/thussbuilding"
             android:padding="8dp" />
 
@@ -40,7 +40,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="用户名: "
+            android:text="用户名："
+            android:textColor="@color/black"
             android:textSize="24sp" />
 
         <EditText
@@ -63,7 +64,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="简    介: "
+            android:textColor="@color/black"
+            android:text="简    介："
             android:textSize="24sp" />
 
         <EditText
@@ -86,7 +88,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="密    码: "
+            android:textColor="@color/black"
+            android:text="密    码："
             android:textSize="24sp" />
 
         <EditText
@@ -110,7 +113,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="邮    箱: "
+        android:textColor="@color/black"
+        android:text="邮    箱："
         android:textSize="24sp" />
 
     <EditText
@@ -134,7 +138,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="年    龄: "
+                android:textColor="@color/black"
+                android:text="年    龄："
                 android:textSize="24sp" />
 
             <EditText
@@ -158,7 +163,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="性    别: "
+                android:textColor="@color/black"
+                android:text="性    别："
                 android:textSize="24sp" />
 
             <Spinner
@@ -175,7 +181,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10sp"
+            android:layout_marginTop="12dp"
             android:gravity="center">
 
             <Button

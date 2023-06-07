@@ -85,7 +85,7 @@
             android:id="@+id/newdongtaibutton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="发送动态"
+            android:text="发表新动态"
             android:textSize="18dp"
             android:layout_weight="0"/>
 

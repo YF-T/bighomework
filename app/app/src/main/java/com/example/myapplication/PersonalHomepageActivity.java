@@ -189,7 +189,6 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                                 banButton.setText(banbuttontext);
                                 WebRequest.downloadImage(image, bitmap -> {
                                     // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-                                    // 是抄的UserInformationActivity，这个代码很像只能返回默认头像的样子……
                                     imageView.setImageBitmap(bitmap);
                                     return null;
                                 });
@@ -209,15 +208,6 @@ public class PersonalHomepageActivity extends AppCompatActivity {
     // Method to generate dummy data for RecyclerView
     private ArrayList<DongTaiContent> getDongTaiData() {
         dongTaiContents = new ArrayList<>();
-//        dongTaiContents.add(
-//                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "14:00 Mar 23rd",
-//                        "盛典即将开启，让世界更美。", 1,2,3,"微博盛典",
-//                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage))));
-//        dongTaiContents.add(
-//                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "15:25 Feb 25th",
-//                        "感谢徐工集团的大力支持！\n体验很好，下次还来！", 7,10,2, "徐工集团拜访记",
-//                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage,GlobalVariable.defaultImage))));
-//        // Add dummy data here
         return dongTaiContents;
     }
 

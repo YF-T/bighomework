@@ -44,9 +44,9 @@ public class LoginAndRegisterActivity extends AppCompatActivity {
         mode = getIntent().getStringExtra("mode");
 
         if(mode.equals("login")) {
-            loginLabel.setText("登录");
+            loginLabel.setText("登 录");
         } else {
-            loginLabel.setText("注册");
+            loginLabel.setText("注 册");
         }
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
