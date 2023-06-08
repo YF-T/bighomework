@@ -84,6 +84,24 @@ def followauthor(request):
     return response
     
 
+@login_required
+def banauthor(request):
+    id = request.POST.get('username', '')
+    print(id)
+    author, flag = GetUserByName(id)  # 待关注的博客作者
+    if not flag:
+        response = JsonResponse({'status': 'author not found'})
+        response.status_code = 200
+        return response
+    user = request.user
+    banned, flag = BanOrDisbanUsers(user, author)
+    bool_banned = True if banned == 'ban' else False
+    response = JsonResponse({'status': 'success',
+                            'bool_banned': bool_banned})
+    response.status_code = 200
+    return response
+
+
 # 有条件的话可以将下方函数改成try-except形式
 @login_required
 def individualinfo(request):  # 返回用户主页的个人信息
@@ -689,10 +707,10 @@ def showabnninglist(request):  # 返回“关注的人”列表
     ich = request.user.id
     ich, _ = GetUserById(ich)
     try:
-        length = len(ich.followings.all())
+        length = len(ich.bannings.all())
         if length != 0:
             index = ['id', 'name', 'identity', 'description', 'image']
-            author_list = ich.followings.values(*index).filter()
+            author_list = ich.bannings.values(*index).filter()
             response = JsonResponse({'status': True, 'list': list(author_list)})
             response.status_code = 200
             return response

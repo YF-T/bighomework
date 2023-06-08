@@ -27,6 +27,7 @@ urlpatterns = [
     path('user/login', user_views.login), 
     path('user/checklogin', user_views.checklogin), 
     path('user/follow', user_views.followauthor),
+    path('user/ban', user_views.banauthor),
     path('user/homepage', user_views.individualinfo),
     path('user/foreigninfo', user_views.showothersinfo),
     path('user/myfollows', user_views.showfollowinglist),
