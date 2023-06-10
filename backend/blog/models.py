@@ -391,18 +391,28 @@ def SendDongTaiMessage(from_user, to_user, dongtai):
 
 def GetUserRecieveMessage(user):
     user = GetUserById(user.id)[0]
-    index = ['id','from_user__name','from_user__image','dongtai__title','dongtai__tag','dongtai__id','new','message','message_type','created_time']
+    index = ['created_time']
     messages = list(user.recieve_message.all().order_by('-created_time').values(*index))
-    for message in messages:
-        message['user'] = message.pop('from_user__name')
-        myurl = '/image/user/' + message.pop('from_user__image')
-        message['user_image'] = myurl.replace('user/user', 'user')
-        message['dongtai_title'] = message.pop('dongtai__title')
-        message['dongtai_tag'] = message.pop('dongtai__tag')
-        message['dongtai_id'] = message.pop('dongtai__id')
-    user.recieve_message.update(new=False)
-    return messages, True
+    # for message in messages:
+    #     message['created_time'] = message.pop('created_time')
+    #     myurl = '/image/user/' + message.pop('from_user__image')
+    #     message['user_image'] = myurl.replace('user/user', 'user')
+    #     message['dongtai_title'] = message.pop('dongtai__title')
+    #     message['dongtai_tag'] = message.pop('dongtai__tag')
+    #     message['dongtai_id'] = message.pop('dongtai__id')
+    if len(messages) > 0:
+        last_time = messages[0]["created_time"]
+        return last_time,True
+    return "nothing",True
 
+def NewMsgTime(user):
+    timelist = ChatMessage.objects.filter(receiver=user).values_list('created_time', flat=True)
+    tlist = list(timelist.order_by('-created_time'))
+
+    if len(tlist) > 0:
+        last_time = tlist[0]
+        return last_time,True
+    return "nothing",True
 
 class ChatMessage(models.Model):
     sender = models.CharField(max_length = 20) # 发送用户

@@ -227,9 +227,9 @@ def uploaddongtaiimage(request):
 
 @login_required
 def getusermessage(request):
-    messages, flag = GetUserRecieveMessage(request.user)
+    last_time, flag = GetUserRecieveMessage(request.user)
     if flag:
-        response = JsonResponse({'status': 'success', 'messages': messages})
+        response = JsonResponse({'status': 'success', 'last_time':last_time})
         response.status_code = 200
     else:
         response = JsonResponse({'status': 'error'})
@@ -286,7 +286,6 @@ def getchaterlist(request):
 def newmsgtime(request):
     user = request.POST.get('user', '')
     last_time,flag = NewMsgTime(user)
-    print(last_time)
     if flag:
         response = JsonResponse({'status': 'success', 'last_time':last_time})
         response.status_code = 200
