@@ -83,10 +83,10 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                 // 如果已经登录，则进行跳转
                 // 跳转到私信界面，还没连接
                 String username = "Default";
-                GlobalVariable.get("username", username);
+                username = GlobalVariable.get("username", "");
                 Intent intent = new Intent(v.getContext(), ChatActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("sender", usernameTextView.toString());
+                bundle.putString("sender", usernameTextView.getText().toString());
                 bundle.putString("username", username);
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
