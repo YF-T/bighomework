@@ -159,6 +159,8 @@ public class GeRenZhongXinFragment extends Fragment {
             register.setVisibility(View.GONE);
             logout.setVisibility(View.VISIBLE);
             mystar.setVisibility(View.VISIBLE);
+            user_name.setVisibility(View.VISIBLE);
+            user_name.setText(GlobalVariable.get("username", ""));
             WebRequest.setImageByUrl(user_image, GlobalVariable.get("userimageurl", "/image/user/abc.jpg"));
         } else {
             personal_info.setVisibility(View.GONE);
