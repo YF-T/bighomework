@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class FollowerAndFolloweeFragment extends Fragment {
     private RecyclerView recyclerView;
     private ItemForFollowFragmentAdapter adapter;
     private ArrayList<UserContent> userArrayList;
+    private TextView textView;
 
     public FollowerAndFolloweeFragment(String fragmentType) {
         // Required empty public constructor
@@ -47,15 +49,27 @@ public class FollowerAndFolloweeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         recyclerView = view.findViewById(R.id.recyclerview);
+        textView = view.findViewById(R.id.texttitle);
         userArrayList = new ArrayList<>();
 
         adapter = new ItemForFollowFragmentAdapter(userArrayList);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
 
-        searchUser();
-
+        String title;
+        if (fragmentType.equals("following")) {
+            title = "关注列表";
+        } else {
+            title = "粉丝列表";
+        }
+        textView.setText(title);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        searchUser();
     }
 
     public void searchUser() {
@@ -65,7 +79,7 @@ public class FollowerAndFolloweeFragment extends Fragment {
         if (fragmentType.equals("following")) {
             url = "/user/myfollows";
         } else {
-            url = "/user/myfollows";
+            url = "/user/myfollowers";
         }
         try {
             WebRequest.sendGetRequest(url, args, hashMap -> {

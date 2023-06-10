@@ -7,9 +7,7 @@
     android:orientation="horizontal"
     android:layout_margin="10dp"
     android:padding="5dp"
-    android:background="@drawable/corner"
-    android:clickable="true"
-    android:onClick="onClick">
+    android:background="@drawable/corner">
 
     <ImageView
         android:id="@+id/headimg"

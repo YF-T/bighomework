@@ -179,6 +179,7 @@ def SearchDongTai(key: str, tag: str, sortkey: str, iffollow: str, type: str, us
     elif type == 'collect':
         user = GetUserById(user.id)[0]
         origin_set = user.becollect.all()
+    origin_set = origin_set.exclude(author__in=user.bannings.all())
     try:
         if temptag != '所有':  # 先进行标签筛选
             dongtais = origin_set.values(*index).\

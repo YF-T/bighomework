@@ -147,6 +147,35 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                 else{
                     banButton.setText("取消屏蔽");
                 }
+                boolean iflogin = true;
+                iflogin = GlobalVariable.get("iflogin", iflogin);
+                if(!iflogin){
+                    return;
+                }
+                HashMap<String, String> inputValues = getAllInputValues();
+                try {
+                    WebRequest.sendPostRequest("/user/ban", inputValues, new Function<HashMap<String, Object>, Void>() {
+                        @Override
+                        public Void apply(HashMap<String, Object> stringObjectHashMap) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if((boolean) stringObjectHashMap.get("bool_banned")){
+                                        // 已经拉黑，则从黑名单中移出
+                                        banButton.setText("将TA屏蔽");
+                                    }
+                                    else{
+                                        banButton.setText("取消屏蔽");
+                                    }
+                                }
+                            });
+                            return null;
+                        }
+                    });
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                // 之后还要刷新一下
             }
         });
 
