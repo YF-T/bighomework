@@ -262,7 +262,7 @@ public class dongtai extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                commentAdapter.notifyItemChanged(0);
+                                commentAdapter.notifyDataSetChanged();
                                 comment.setText(String.format("评论(%d)", hashMap.get("num_comment")));
                                 loading.dismiss();
                             }

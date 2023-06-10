@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -67,6 +68,12 @@ public class DongTaiAdapter extends RecyclerView.Adapter<DongTaiViewHolder> {
         holder.collect.setText(String.format("收藏(%d)", dongTaiContent.collect));
         holder.title.setText(String.format("# %s", dongTaiContent.title));
         holder.tag.setText(dongTaiContent.tag);
+        if (dongTaiContent.bool_thumb) {
+            holder.like.setTextColor(Color.BLUE);
+        }
+        if (dongTaiContent.bool_collect) {
+            holder.like.setTextColor(Color.BLUE);
+        }
         String tmp = dongTaiContent.position;
         if(tmp.equals("添加当前位置")){
             holder.position.setVisibility(View.INVISIBLE);

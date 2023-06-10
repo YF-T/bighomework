@@ -139,14 +139,6 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         banButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                String txt = banButton.getText().toString();
-                if(txt.equals("取消屏蔽")){
-                    // 已经拉黑，则从黑名单中移出
-                    banButton.setText("将TA屏蔽");
-                }
-                else{
-                    banButton.setText("取消屏蔽");
-                }
                 boolean iflogin = true;
                 iflogin = GlobalVariable.get("iflogin", iflogin);
                 if(!iflogin){
@@ -162,10 +154,10 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                                 public void run() {
                                     if((boolean) stringObjectHashMap.get("bool_banned")){
                                         // 已经拉黑，则从黑名单中移出
-                                        banButton.setText("将TA屏蔽");
+                                        banButton.setText("取消屏蔽");
                                     }
                                     else{
-                                        banButton.setText("取消屏蔽");
+                                        banButton.setText("将TA屏蔽");
                                     }
                                 }
                             });
@@ -267,14 +259,18 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        searchDongTai();
     }
 
     // Method to generate dummy data for RecyclerView
     private ArrayList<DongTaiContent> getDongTaiData() {
         dongTaiContents = new ArrayList<>();
         return dongTaiContents;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        searchDongTai();
     }
 
     // 对HashMap的使用参考UserInformationActivity.java
