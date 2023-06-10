@@ -122,7 +122,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="example@example.com"
+        android:text="example@163.com"
         android:textSize="24sp"
         android:enabled="false"
         android:inputType="textEmailAddress" />
@@ -181,7 +181,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="15dp"
             android:gravity="center">
 
             <Button
@@ -189,7 +189,7 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="提交"
-                android:layout_marginHorizontal="20dp"
+                android:layout_marginHorizontal="25dp"
                 android:textSize="24sp"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/white_button_background" />
@@ -199,7 +199,7 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:text="返回"
-                android:layout_marginHorizontal="20dp"
+                android:layout_marginHorizontal="25dp"
                 android:textSize="24sp"
                 android:textColor="#FFFFFF"
                 android:background="@drawable/white_button_background" />

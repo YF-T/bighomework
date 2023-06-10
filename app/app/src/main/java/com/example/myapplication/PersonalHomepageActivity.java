@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -114,12 +115,14 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                                     if((boolean) stringObjectHashMap.get("bool_follow")){
                                         // 点击表示从未关注变为关注
                                         followOrUnfollow.setText("取关");
+                                        v.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.tint_blue));
                                         fans += 1;
                                         String follower = "粉丝：" + Integer.toString(fans);
                                         followerTextView.setText(follower);
                                     }
                                     else{
                                         followOrUnfollow.setText("关注");
+                                        v.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.button_blue));
                                         fans -= 1;
                                         String follower = "粉丝：" + Integer.toString(fans);
                                         followerTextView.setText(follower);
@@ -143,9 +146,11 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                 if(txt.equals("取消屏蔽")){
                     // 已经拉黑，则从黑名单中移出
                     banButton.setText("将TA屏蔽");
+                    v.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.button_blue));
                 }
                 else{
                     banButton.setText("取消屏蔽");
+                    v.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.tint_blue));
                 }
                 boolean iflogin = true;
                 iflogin = GlobalVariable.get("iflogin", iflogin);
@@ -212,7 +217,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                         if ((boolean) info.get("bool_ban")) {
                             banbuttontext = "取消屏蔽";
                         } else {
-                            banbuttontext = "屏蔽TA";
+                            banbuttontext = "将TA屏蔽";
                         }
 
                         // Update the UI with the retrieved user information
@@ -224,7 +229,19 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                                 followingTextView.setText(following);
                                 followerTextView.setText(follower);
                                 followOrUnfollow.setText(followOrUnfollowtext);
+                                if(followOrUnfollowtext.equals("取关")){
+                                    followOrUnfollow.setBackgroundColor(getResources().getColor(R.color.tint_blue));
+                                }
+                                else{
+                                    followOrUnfollow.setBackgroundColor(getResources().getColor(R.color.button_blue));
+                                }
                                 banButton.setText(banbuttontext);
+                                if(banbuttontext.equals("取消屏蔽")){
+                                    banButton.setBackgroundColor(getResources().getColor(R.color.tint_blue));
+                                }
+                                else{
+                                    banButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+                                }
                                 WebRequest.downloadImage(image, bitmap -> {
                                     int width = bitmap.getWidth();
                                     int height = bitmap.getHeight();
