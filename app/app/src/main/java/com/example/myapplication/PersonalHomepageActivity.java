@@ -5,6 +5,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -57,10 +64,10 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         backButton = findViewById(R.id.back);
 
         // Set the user information
-        imageView.setImageResource(R.drawable.touxiang);
-        usernameTextView.setText("FrantGuo");
-        followingTextView.setText("关注：1");
-        followerTextView.setText("粉丝：1");
+        imageView.setImageResource(R.drawable.circle_profile);
+        usernameTextView.setText("   ");
+        followingTextView.setText("关注：  ");
+        followerTextView.setText("粉丝：  ");
 
         // Set up the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -78,10 +85,10 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                 // 如果已经登录，则进行跳转
                 // 跳转到私信界面，还没连接
                 String username = "Default";
-                GlobalVariable.get("username", username);
+                username = GlobalVariable.get("username", "");
                 Intent intent = new Intent(v.getContext(), ChatActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("sender", usernameTextView.toString());
+                bundle.putString("sender", usernameTextView.getText().toString());
                 bundle.putString("username", username);
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
@@ -190,8 +197,30 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                                 followOrUnfollow.setText(followOrUnfollowtext);
                                 banButton.setText(banbuttontext);
                                 WebRequest.downloadImage(image, bitmap -> {
-                                    // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-                                    imageView.setImageBitmap(bitmap);
+                                    int width = bitmap.getWidth();
+                                    int height = bitmap.getHeight();
+                                    // 计算正方形的边长
+                                    int size = Math.min(width, height);
+                                    // 计算裁剪的起始位置
+                                    int x = (width - size) / 2;
+                                    int y = (height - size) / 2;
+                                    Bitmap squareBitmap = Bitmap.createBitmap(bitmap, x, y, size, size);
+                                    Bitmap circularBitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+                                    Canvas canvas = new Canvas(circularBitmap);
+                                    Paint paint = new Paint();
+                                    Rect rect = new Rect(0, 0, size, size);
+                                    RectF rectF = new RectF(rect);
+                                    float radius = size / 2f;
+                                    paint.setAntiAlias(true);
+                                    canvas.drawARGB(0, 0, 0, 0);
+                                    canvas.drawCircle(radius, radius, radius, paint);
+                                    paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                                    canvas.drawBitmap(squareBitmap, rect, rect, paint);
+
+                                    imageView.post(() -> {
+                                        imageView.setImageBitmap(circularBitmap);
+                                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                    });
                                     return null;
                                 });
                             }

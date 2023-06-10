@@ -90,7 +90,11 @@ public class dongtai extends AppCompatActivity {
         }
         title.setText(String.format("# %s", dongTaiContent.title));
         tag.setText(dongTaiContent.tag);
-        position.setText(dongTaiContent.position);
+        String tmp = dongTaiContent.position;
+        if(tmp.equals("添加当前位置")){
+            position.setVisibility(View.INVISIBLE);
+        }
+        else {position.setText(dongTaiContent.position);}
 
         Markwon markwon = Markwon.builder(this).build();
         markwon.setMarkdown(content, dongTaiContent.content);
@@ -221,11 +225,7 @@ public class dongtai extends AppCompatActivity {
             GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount);//行数
             GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1
             SquareImageView imageView = new SquareImageView(contentimg.getContext());
-//            WebRequest.downloadImage(imagearray.get(i), bitmap -> {
-//                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-//                imageView.setImageBitmap(bitmap);
-//                return null;
-//            });
+
             WebRequest.setImageByUrl(imageView, imagearray.get(i));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
