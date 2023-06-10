@@ -8,64 +8,53 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey">
+        android:background="@color/tint_blue">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="20dp"
-            android:background="@color/grey">
+            android:background="@color/tint_blue">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="100dp"
                 android:orientation="horizontal"
-                android:padding="20dp"
+                android:padding="15dp"
                 android:background="@drawable/corner">
 
                 <ImageView
                     android:id="@+id/user_image"
-                    android:layout_width="80dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginLeft="5dp"
                     android:src="@drawable/thussbuilding"
                     android:layout_weight="0"/>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="20dp">
 
-                    <TextView
-                        android:id="@+id/user_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Tanyifan"
-                        android:textSize="35dp"
-                        android:textColor="@color/black"
-                        android:layout_marginBottom="5dp"/>
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tanyifan"
+                    android:textSize="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/black"
+                    android:layout_marginBottom="5dp"/>
 
-                    <TextView
-                        android:id="@+id/user_email"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:text="12345678@qq.com"
-                        android:textSize="20dp" />
 
-                </LinearLayout>
 
             </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/personal_info"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="20dp"
+                android:padding="15dp"
 
                 android:background="@drawable/corner">
 
@@ -76,17 +65,18 @@
                     android:text="查看/修改个人信息"
                     android:textColor="@color/black"
                     android:layout_centerVertical="true"
-                    android:textSize="24dp" />
+                    android:layout_centerHorizontal="true"
+                    android:textSize="20dp" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/message"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="20dp"
+                android:padding="15dp"
                 android:clickable="true"
                 android:background="@drawable/corner">
 
@@ -97,30 +87,19 @@
                     android:text="消息中心"
                     android:textColor="@color/black"
                     android:layout_centerVertical="true"
-                    android:textSize="24dp" />
+                    android:layout_centerHorizontal="true"
+                    android:textSize="20dp" />
 
-                <TextView
-                    android:id="@+id/message_num"
-                    android:layout_width="wrap_content"
-                    android:layout_height="34dp"
-                    android:text="10"
-                    android:textSize="20dp"
-                    android:textColor="@color/white"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:paddingHorizontal="12dp"
-                    android:background="@drawable/corner_red" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/mystar"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="20dp"
+                android:padding="15dp"
                 android:clickable="true"
                 android:background="@drawable/corner">
 
@@ -132,7 +111,7 @@
                     android:textColor="@color/black"
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
-                    android:textSize="24dp" />
+                    android:textSize="20dp" />
 
             </RelativeLayout>
 
@@ -160,11 +139,11 @@
 
             <RelativeLayout
                 android:id="@+id/login"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="20dp"
+                android:padding="15dp"
                 android:clickable="true"
                 android:background="@drawable/corner">
 
@@ -176,17 +155,17 @@
                     android:textColor="@color/black"
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
-                    android:textSize="24dp" />
+                    android:textSize="20dp" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/register"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="20dp"
+                android:padding="15dp"
                 android:clickable="true"
                 android:background="@drawable/corner">
 
@@ -198,17 +177,17 @@
                     android:textColor="@color/black"
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
-                    android:textSize="24dp" />
+                    android:textSize="20dp" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/logout"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="20dp"
+                android:padding="15dp"
                 android:clickable="true"
                 android:background="@drawable/corner">
 
@@ -220,17 +199,17 @@
                     android:textColor="@color/black"
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
-                    android:textSize="24dp" />
+                    android:textSize="20dp" />
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/setting"
-                android:layout_marginTop="14dp"
+                android:layout_marginTop="12dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="20dp"
+                android:padding="15dp"
                 android:clickable="true"
                 android:background="@drawable/corner">
 
@@ -242,7 +221,7 @@
                     android:textColor="@color/black"
                     android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
-                    android:textSize="24dp" />
+                    android:textSize="20dp" />
 
             </RelativeLayout>
 

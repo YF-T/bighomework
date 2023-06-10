@@ -49,7 +49,6 @@ public class FollowerAndFolloweeFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         recyclerView = view.findViewById(R.id.recyclerview);
-        textView = view.findViewById(R.id.texttitle);
         userArrayList = new ArrayList<>();
 
         adapter = new ItemForFollowFragmentAdapter(userArrayList);
@@ -62,7 +61,6 @@ public class FollowerAndFolloweeFragment extends Fragment {
         } else {
             title = "粉丝列表";
         }
-        textView.setText(title);
         return view;
     }
 

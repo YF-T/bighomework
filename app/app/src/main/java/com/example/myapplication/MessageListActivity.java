@@ -33,8 +33,6 @@ public class MessageListActivity extends AppCompatActivity {
     private Timer timer;
     private String username;
 
-    private String lastmsgtime = "";
-    private boolean first_created = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +46,8 @@ public class MessageListActivity extends AppCompatActivity {
 
         adapter = new MessageListAdapter(this, messageList,username);
         messageRecyclerView.setAdapter(adapter);
-        handler = new Handler(Looper.getMainLooper());
 
+        handler = new Handler(Looper.getMainLooper());
         timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -60,7 +58,8 @@ public class MessageListActivity extends AppCompatActivity {
                     public void run() {
                         try {
                             getchaterList();
-                            newmsgtime();
+//                            newmsgtime();
+//                            newdongtaitime();
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -111,33 +110,62 @@ public class MessageListActivity extends AppCompatActivity {
         timer.cancel();
     }
 
-    private void newmsgtime() throws IOException{
-        HashMap<String, String> requestArgs = new HashMap<>();
-        requestArgs.put("user", username);
-        Context context = this;
-        WebRequest.sendPostRequest("/chat/newmsgtime", requestArgs, (result) -> {
-            String status = (String) result.get("status");
-            if(status.equals("success")) {
-                String newtime = (String) result.get("last_time");
-                if (first_created){
-                    first_created = false;
-                    lastmsgtime = newtime;
-                }
-                else{
-                    if (!newtime.equals(lastmsgtime)){
-                        lastmsgtime = newtime;
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "您有新的私信消息", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-            } else {
-                //no new messages
-            }
-            return null;
-        });
-    }
+//    private void newmsgtime() throws IOException{
+//        HashMap<String, String> requestArgs = new HashMap<>();
+//        requestArgs.put("user", username);
+//        Context context = this;
+//        WebRequest.sendPostRequest("/chat/newmsgtime", requestArgs, (result) -> {
+//            String status = (String) result.get("status");
+//            if(status.equals("success")) {
+//                String newtime = (String) result.get("last_time");
+//                if (first_created){
+//                    first_created = false;
+//                    lastmsgtime = newtime;
+//                }
+//                else{
+//                    if (!newtime.equals(lastmsgtime)){
+//                        lastmsgtime = newtime;
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                Toast.makeText(context, "您有新的私信消息", Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+//                    }
+//                }
+//            } else {
+//                //no new messages
+//            }
+//            return null;
+//        });
+//    }
+
+//    private void newdongtaitime() throws IOException{
+//        HashMap<String, String> requestArgs = new HashMap<>();
+//        Context context = this;
+//        WebRequest.sendGetRequest("/dongtai/message", requestArgs, (result) -> {
+//            String status = (String) result.get("status");
+//            if(status.equals("success")) {
+//                String newtime = (String) result.get("last_time");
+//                if (first_created_dongtai){
+//                    first_created_dongtai = false;
+//                    lastdongtaitime = newtime;
+//                }
+//                else{
+//                    if (!newtime.equals(lastdongtaitime)){
+//                        lastdongtaitime = newtime;
+//                        runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                Toast.makeText(context, "您有新的动态消息", Toast.LENGTH_SHORT).show();
+//                            }
+//                        });
+//                    }
+//                }
+//            } else {
+//                //no new messages
+//            }
+//            return null;
+//        });
+//    }
 }

@@ -197,7 +197,7 @@ public class UserInformationActivity extends AppCompatActivity {
         userInfo.put("username", "John Doe");
         userInfo.put("intro", "Hello, I'm John.");
         userInfo.put("password", "password123");
-        userInfo.put("email", "example@example.com");
+        userInfo.put("email", "example@163.com");
         userInfo.put("age", "25");
         userInfo.put("gender", "男");
         return userInfo;
@@ -267,6 +267,6 @@ public class UserInformationActivity extends AppCompatActivity {
             System.out.println(key + ": " + value);
         }
 
-        // 在这里你可以对输入框的值进行处理或保存操作
+        // 在这里可以对输入框的值进行处理或保存操作
     }
 }

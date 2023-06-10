@@ -43,6 +43,9 @@ public class MainActivity extends AppCompatActivity {
         WebRequest.context = this;
         WebRequest.baseUrl = GlobalVariable.get("baseurl", WebRequest.baseUrl);
 
+        Intent serviceIntent = new Intent(this, MyService.class);
+        startService(serviceIntent);
+
         // 页面切换
         bottomNavigationView = findViewById(R.id.bottomnavigation);
         viewPager2 = findViewById(R.id.rootviewpager);
