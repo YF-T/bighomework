@@ -36,7 +36,6 @@ public class GeRenZhongXinFragment extends Fragment {
     private RelativeLayout setting;
     private ImageView user_image;
     private TextView user_name;
-    private TextView user_email;
     private ActivityResultLauncher<Intent> resultLauncherForRegisterAndLogin;
 
     public GeRenZhongXinFragment() {
@@ -70,8 +69,6 @@ public class GeRenZhongXinFragment extends Fragment {
         setting = view.findViewById(R.id.setting);
         user_image = view.findViewById(R.id.user_image);
         user_name = view.findViewById(R.id.user_name);
-        user_email = view.findViewById(R.id.user_email);
-        user_email.setVisibility(TextView.INVISIBLE);
 
         resultLauncherForRegisterAndLogin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             changeLayoutByStatus(view);
@@ -162,8 +159,6 @@ public class GeRenZhongXinFragment extends Fragment {
             register.setVisibility(View.GONE);
             logout.setVisibility(View.VISIBLE);
             mystar.setVisibility(View.VISIBLE);
-            user_name.setText(GlobalVariable.get("username", "default"));
-            user_email.setText(GlobalVariable.get("useremail", "default"));
             WebRequest.setImageByUrl(user_image, GlobalVariable.get("userimageurl", "/image/user/abc.jpg"));
         } else {
             personal_info.setVisibility(View.GONE);
@@ -174,7 +169,6 @@ public class GeRenZhongXinFragment extends Fragment {
             mystar.setVisibility(View.GONE);
             user_image.setImageResource(R.drawable.ic_logoutimage_foreground);
             user_name.setText("未登录");
-            user_email.setText("");
         }
     }
 

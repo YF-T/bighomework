@@ -53,9 +53,9 @@
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/headimg"
-        android:backgroundTint="@color/button_blue"
+        android:backgroundTint="@color/tint_blue"
         android:onClick="followorunfollow"
-        android:text="关注" />
+        android:text="取关" />
 
     <View
         android:id="@+id/borderview"
