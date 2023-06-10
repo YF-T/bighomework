@@ -116,6 +116,7 @@ public class dongtai extends AppCompatActivity {
                 Intent intent = new Intent(context, PersonalHomepageActivity.class);
                 intent.putExtra("username", dongTaiContent.publisher);
                 startActivity(intent);
+                overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
             }
         });
         comment.setOnClickListener(view -> {

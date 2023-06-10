@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">清软论坛</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_newdongtai">newdongtai</string>
+    <string name="title_activity_newdongtai">新建动态</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
@@ -32,13 +32,13 @@
     </string-array>
     <string-array name="searchorder">
         <item>新发表</item>
-        <item>回复多</item>
+        <item>评论多</item>
         <item>热度高</item>
         <item>收藏多</item>
     </string-array>
     <string-array name="searchfollow">
         <item>所有人</item>
-        <item>仅关注</item>
+        <item>我的关注</item>
     </string-array>
 
 </resources>

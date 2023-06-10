@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -46,6 +47,7 @@ public class DongTaiAdapter extends RecyclerView.Adapter<DongTaiViewHolder> {
                 bundle.putSerializable("DongTaiContent", dongTaiContent);
                 intent.putExtras(bundle);
                 view.getContext().startActivity(intent);
+                ((Activity)view.getContext()).overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
             }
         });
         return dongTaiViewHolder;
