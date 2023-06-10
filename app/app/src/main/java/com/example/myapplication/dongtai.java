@@ -24,6 +24,7 @@ import android.widget.VideoView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class dongtai extends AppCompatActivity {
         }
         collect.setText(String.format("收藏(%d)", dongTaiContent.collect));
         if (dongTaiContent.bool_collect) {
-            like.setTextColor(Color.BLUE);
+            collect.setTextColor(Color.BLUE);
         }
         title.setText(String.format("# %s", dongTaiContent.title));
         tag.setText(dongTaiContent.tag);
@@ -178,11 +179,23 @@ public class dongtai extends AppCompatActivity {
         try {
             WebRequest.sendGetRequest("/dongtai/dongtai", args, hashMap -> {
                 try {
+                    dongTaiContent = new DongTaiContent(JsonUtil.jsonObjectToHashMap((JSONObject) hashMap.get("dongtai")));
                     ArrayList<Object> arrayList = JsonUtil.jsonArrayToArrayList((JSONArray) hashMap.get("comments"));
                     for (Object o: arrayList) {
                         HashMap<String, Object> commentHashMap = (HashMap<String, Object>) o;
                         comments.add(new CommentContent((String) commentHashMap.get("author"), (String) commentHashMap.get("content")));
                     }
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (dongTaiContent.bool_thumb) {
+                                like.setTextColor(Color.BLUE);
+                            }
+                            if (dongTaiContent.bool_collect) {
+                                collect.setTextColor(Color.BLUE);
+                            }
+                        }
+                    });
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
                 }

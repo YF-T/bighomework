@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.AnyRes;
 import androidx.annotation.NonNull;
@@ -89,12 +90,15 @@ public class DongTaiContent implements Serializable {
         }
         if (hashMap.containsKey("bool_thumb")) {
             bool_thumb = (boolean) hashMap.get("bool_thumb");
+            Log.d("bool_thumb", " "+bool_thumb);
         }
         if (hashMap.containsKey("bool_collect")) {
             bool_collect = (boolean) hashMap.get("bool_collect");
+            Log.d("bool_collect", " "+bool_collect);
         }
         if (hashMap.containsKey("bool_follow")) {
             bool_follow = (boolean) hashMap.get("bool_follow");
+            Log.d("bool_follow", " "+bool_follow);
         }
 
         // 处理图片数组
@@ -109,7 +113,7 @@ public class DongTaiContent implements Serializable {
         }
     }
 
-    public Uri getUriFromResId(@NonNull Context context, @AnyRes int drawableId) {
+    public Uri getUriFromResId(Context context, @AnyRes int drawableId) {
         return Uri.parse(
                 ContentResolver.SCHEME_ANDROID_RESOURCE
                         + "://" + context.getResources().getResourcePackageName(drawableId)

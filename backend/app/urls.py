@@ -32,6 +32,7 @@ urlpatterns = [
     path('user/foreigninfo', user_views.showothersinfo),
     path('user/myfollows', user_views.showfollowinglist),
     path('user/myfollowers', user_views.showfollowerlist),
+    path('user/mybans', user_views.showbanlist),
     path('user/tobeupdated', user_views.tobeupdatedinfo),
     path('user/updatemyinfo', user_views.updatemyinfo),
     path('user/getfollowings', user_views.getfollowings),

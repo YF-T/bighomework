@@ -76,7 +76,7 @@ public class DongTaiAdapter extends RecyclerView.Adapter<DongTaiViewHolder> {
         }
         String tmp = dongTaiContent.position;
         if(tmp.equals("添加当前位置")){
-            holder.position.setVisibility(View.INVISIBLE);
+            holder.position.setVisibility(View.GONE);
         }
         else {holder.position.setText(dongTaiContent.position);}
 

@@ -34,6 +34,7 @@ public class GeRenZhongXinFragment extends Fragment {
     private RelativeLayout logout;
     private RelativeLayout mystar;
     private RelativeLayout setting;
+    private RelativeLayout myban;
     private ImageView user_image;
     private TextView user_name;
     private TextView user_email;
@@ -72,6 +73,7 @@ public class GeRenZhongXinFragment extends Fragment {
         user_name = view.findViewById(R.id.user_name);
         user_email = view.findViewById(R.id.user_email);
         user_email.setVisibility(TextView.INVISIBLE);
+        myban = view.findViewById(R.id.myban);
 
         resultLauncherForRegisterAndLogin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             changeLayoutByStatus(view);
@@ -123,6 +125,14 @@ public class GeRenZhongXinFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), ShoucangAcitvity.class);
+                intent.putExtra("username", user_name.getText());
+                startActivity(intent);
+            }
+        });
+        myban.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), BanUserActivity.class);
                 intent.putExtra("username", user_name.getText());
                 startActivity(intent);
             }

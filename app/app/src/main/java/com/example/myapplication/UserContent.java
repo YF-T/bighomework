@@ -6,7 +6,8 @@ public class UserContent {
     private String publisher;
     private String introduction;
     private String imageurl;
-    private boolean iffollow;
+    private boolean iffollow = false;
+    private boolean ifban = false;
 
     public UserContent(String publisher, String introduction) {
         this.publisher = publisher;
@@ -17,7 +18,12 @@ public class UserContent {
         this.publisher = (String) hashMap.get("name");
         this.introduction = (String) hashMap.get("description");
         this.imageurl = (String) hashMap.get("image_url");
-        this.iffollow = (boolean) hashMap.get("iffollow");
+        if (hashMap.containsKey("iffollow")) {
+            this.iffollow = (boolean) hashMap.get("iffollow");
+        }
+        if (hashMap.containsKey("ifban")) {
+            this.ifban = (boolean) hashMap.get("ifban");
+        }
     }
 
     public String getPublisher() {
@@ -50,5 +56,13 @@ public class UserContent {
 
     public void setIffollow(boolean iffollow) {
         this.iffollow = iffollow;
+    }
+
+    public boolean isIfban() {
+        return ifban;
+    }
+
+    public void setIfban(boolean ifban) {
+        this.ifban = ifban;
     }
 }

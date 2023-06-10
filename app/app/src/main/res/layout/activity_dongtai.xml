@@ -27,12 +27,28 @@
                 android:padding="15dp"
                 android:background="@drawable/corner">
 
-                <ImageView
-                    android:id="@+id/headimg"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/thussbuilding"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/headimg"
+                        android:layout_marginTop="5dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:src="@drawable/thussbuilding"/>
+
+                    <TextView
+                        android:id="@+id/ifguanzhu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="未关注"
+                        android:gravity="center"
+                        android:layout_gravity="center"/>
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="0dp"

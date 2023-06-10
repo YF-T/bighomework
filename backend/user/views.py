@@ -305,6 +305,31 @@ def showfollowerlist(request):  # 返回“关注的人”列表
         response = JsonResponse({'status': False, 'list': 'error'})
         response.status_code = 200
         return response
+        
+@login_required
+def showbanlist(request):  # 返回“关注的人”列表
+    ich = request.user.id
+    ich, _ = GetUserById(ich)
+    try:
+        length = len(ich.bannings.all())
+        if length != 0:
+            index = ['id', 'name', 'identity', 'description', 'image']
+            author_list = list(ich.bannings.values(*index).filter())
+            for author in author_list:
+                author['image_url'] = '/image/' + author['image']
+                author['ifban'] = ich.bannings.filter(id = author['id']).exists()
+                author.pop('image')
+            response = JsonResponse({'status': True, 'list': author_list})
+            response.status_code = 200
+            return response
+        else:
+            response = JsonResponse({'status': True, 'list': []})
+            response.status_code = 200
+            return response
+    except:
+        response = JsonResponse({'status': False, 'list': 'error'})
+        response.status_code = 200
+        return response
     
 
 @login_required
