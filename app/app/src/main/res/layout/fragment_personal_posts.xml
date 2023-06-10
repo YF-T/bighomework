@@ -26,7 +26,9 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/touxiang" />
+            android:background="@drawable/circle_profile"
+            android:src="@drawable/touxiang"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/username"

@@ -65,7 +65,11 @@ public class DongTaiAdapter extends RecyclerView.Adapter<DongTaiViewHolder> {
         holder.collect.setText(String.format("收藏(%d)", dongTaiContent.collect));
         holder.title.setText(String.format("# %s", dongTaiContent.title));
         holder.tag.setText(dongTaiContent.tag);
-        holder.position.setText(dongTaiContent.position);
+        String tmp = dongTaiContent.position;
+        if(tmp.equals("添加当前位置")){
+            holder.position.setVisibility(View.INVISIBLE);
+        }
+        else {holder.position.setText(dongTaiContent.position);}
 
         Markwon markwon = Markwon.builder(inflater.getContext()).build();
         markwon.setMarkdown(holder.content, dongTaiContent.content);
@@ -135,11 +139,7 @@ class DongTaiViewHolder extends RecyclerView.ViewHolder {
             GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount);//行数
             GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1
             SquareImageView imageView = new SquareImageView(contentimg.getContext());
-//            WebRequest.downloadImage(imagearray.get(i), bitmap -> {
-//                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-//                imageView.setImageBitmap(bitmap);
-//                return null;
-//            });
+
             WebRequest.setImageByUrl(imageView, imagearray.get(i));
 //            imageView.setImageURI(Uri.parse(imagearray.get(i)));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
