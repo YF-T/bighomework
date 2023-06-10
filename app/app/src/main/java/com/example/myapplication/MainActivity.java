@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                     case 1:
                         return new HuaTiAndDaoDuAndWoDeFragment("话题");
                     case 2:
-                        return new FollowerAndFolloweeFragment();
+                        return new FollowerAndFolloweeFragment("following");
                     case 3:
                         return new GeRenZhongXinFragment();
                 }

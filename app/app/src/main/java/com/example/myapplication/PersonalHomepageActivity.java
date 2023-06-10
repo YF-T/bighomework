@@ -38,6 +38,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
     private ArrayList<DongTaiContent> dongTaiContents;
     private Button banButton;
     private int fans;
+    private Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         followOrUnfollow = findViewById(R.id.follow);
         sendMessage = findViewById(R.id.send_message);
         banButton = findViewById(R.id.banButton);
+        backButton = findViewById(R.id.back);
 
         // Set the user information
         imageView.setImageResource(R.drawable.touxiang);
@@ -201,6 +203,12 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         searchDongTai();
     }

@@ -31,6 +31,14 @@ public class ItemForFollowFragmentAdapter extends RecyclerView.Adapter<ItemForFo
         UserContent user = userList.get(position);
         holder.publisher.setText(user.getPublisher());
         holder.introduction.setText(user.getIntroduction());
+        WebRequest.setImageByUrl(holder.headImg, user.getImageurl());
+        String followOrUnfollowtext;
+        if (user.isIffollow()) {
+            followOrUnfollowtext = "取关";
+        } else {
+            followOrUnfollowtext = "关注";
+        }
+        holder.button.setText(followOrUnfollowtext);
     }
 
     @Override

@@ -263,8 +263,12 @@ def showfollowinglist(request):  # 返回“关注的人”列表
         length = len(ich.followings.all())
         if length != 0:
             index = ['id', 'name', 'identity', 'description', 'image']
-            author_list = ich.followings.values(*index).filter()
-            response = JsonResponse({'status': True, 'list': list(author_list)})
+            author_list = list(ich.followings.values(*index).filter())
+            for author in author_list:
+                author['image_url'] = '/image/' + author['image']
+                author['iffollow'] = ich.followings.filter(id = author['id']).exists()
+                author.pop('image')
+            response = JsonResponse({'status': True, 'list': author_list})
             response.status_code = 200
             return response
         else:
