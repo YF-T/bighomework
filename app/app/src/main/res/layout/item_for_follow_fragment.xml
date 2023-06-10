@@ -7,9 +7,7 @@
     android:orientation="horizontal"
     android:layout_margin="10dp"
     android:padding="5dp"
-    android:background="@drawable/corner"
-    android:clickable="true"
-    android:onClick="onClick">
+    android:background="@drawable/corner">
 
     <ImageView
         android:id="@+id/headimg"
@@ -36,7 +34,7 @@
             android:text="default"
             android:textSize="22dp"
             android:layout_marginLeft="3dp"
-            android:textColor="@color/dark_blue"/>
+            android:textColor="@color/font_blue"/>
 
 
         <TextView
@@ -55,7 +53,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/headimg"
-        android:backgroundTint="@color/dark_blue"
+        android:backgroundTint="@color/button_blue"
         android:onClick="followorunfollow"
         android:text="关注" />
 

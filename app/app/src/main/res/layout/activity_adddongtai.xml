@@ -9,141 +9,152 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"
-        android:orientation="vertical"
-        android:background="#DCDCDC">
+        android:background="#DCDCDC"
+        android:orientation="vertical">
 
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/all"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_margin="5dp"
-            android:padding="15dp"
-            android:background="@drawable/corner"
-            android:clickable="true">
-
-            <ImageView
-                android:id="@+id/headimg"
-                android:layout_marginTop="5dp"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/thussbuilding"/>
+            android:padding="10dp"
+            android:orientation="vertical"
+            android:background="#DCDCDC">
 
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_marginLeft="5dp"
+                android:id="@+id/all"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:orientation="horizontal"
+                android:layout_margin="5dp"
+                android:padding="15dp"
+                android:background="@drawable/corner"
+                android:clickable="true">
 
-                <TextView
-                    android:id="@+id/publisher"
-                    android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/headimg"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/thussbuilding"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="monospace"
-                    android:text="Tanyifan"
-                    android:textSize="22dp"
-                    android:layout_marginLeft="3dp"
-                    android:textColor="#5555AA"/>
+                    android:orientation="vertical"
+                    android:layout_weight="1">
 
-                <EditText
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="5dp"
-                    android:text="title"
-                    android:textColor="#4444DD"
-                    android:layout_marginLeft="3dp"
-                    android:textSize="18dp"
-                    android:background="@android:color/transparent"/>
+                    <TextView
+                        android:id="@+id/publisher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="monospace"
+                        android:text="Tanyifan"
+                        android:textSize="22dp"
+                        android:layout_marginLeft="3dp"
+                        android:textColor="@color/font_blue"/>
 
-                <EditText
-                    android:id="@+id/content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:text="content"
-                    android:textColor="@color/black"
-                    android:layout_marginLeft="3dp"
-                    android:textSize="18dp"
-                    android:background="@android:color/transparent"/>
+                    <EditText
+                        android:id="@+id/title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="5dp"
+                        android:text="title"
+                        android:textColor="@color/font_blue"
+                        android:layout_marginLeft="3dp"
+                        android:textSize="18dp"
+                        android:background="@android:color/transparent"/>
 
-                <GridLayout
-                    android:id="@+id/contentimg"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:columnCount="3">
+                    <EditText
+                        android:id="@+id/content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dp"
+                        android:text="content"
+                        android:textColor="@color/black"
+                        android:layout_marginLeft="3dp"
+                        android:textSize="18dp"
+                        android:background="@android:color/transparent"/>
 
-                    <ImageView
-                        android:layout_margin="2dp"
-                        android:layout_height="100dp"
-                        android:layout_width="0dp"
-                        android:layout_columnWeight="1"
-                        android:src="@drawable/thussbuilding"/>
-                    <ImageView
-                        android:layout_margin="2dp"
-                        android:layout_height="100dp"
-                        android:layout_width="0dp"
-                        android:layout_columnWeight="1"
-                        android:src="@drawable/thussbuilding"/>
-                    <ImageView
-                        android:layout_margin="2dp"
-                        android:layout_height="100dp"
-                        android:layout_width="0dp"
-                        android:layout_columnWeight="1"
-                        android:src="@drawable/thussbuilding"/>
-                    <ImageView
-                        android:layout_margin="2dp"
-                        android:layout_height="100dp"
-                        android:layout_width="0dp"
-                        android:layout_columnWeight="1"
-                        android:src="@drawable/thussbuilding"/>
-                    <ImageView
-                        android:layout_margin="2dp"
-                        android:layout_height="100dp"
-                        android:layout_width="0dp"
-                        android:layout_columnWeight="1"
-                        android:src="@drawable/thussbuilding"/>
+                    <GridLayout
+                        android:id="@+id/contentimg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="3">
 
-                </GridLayout>
+                        <ImageView
+                            android:layout_margin="2dp"
+                            android:layout_height="100dp"
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:src="@drawable/thussbuilding"/>
+                        <ImageView
+                            android:layout_margin="2dp"
+                            android:layout_height="100dp"
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:src="@drawable/thussbuilding"/>
+                        <ImageView
+                            android:layout_margin="2dp"
+                            android:layout_height="100dp"
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:src="@drawable/thussbuilding"/>
+                        <ImageView
+                            android:layout_margin="2dp"
+                            android:layout_height="100dp"
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:src="@drawable/thussbuilding"/>
+                        <ImageView
+                            android:layout_margin="2dp"
+                            android:layout_height="100dp"
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:src="@drawable/thussbuilding"/>
 
-                <Spinner
-                    android:id="@+id/gettag"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:tooltipText="tag"
-                    android:entries="@array/tags" />
+                    </GridLayout>
 
-                <Button
-                    android:id="@+id/getposition"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="点击获取用户位置"/>
+                    <Spinner
+                        android:id="@+id/gettag"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:tooltipText="tag"
+                        android:entries="@array/tags" />
 
+                    <Button
+                        android:id="@+id/getposition"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/button_blue"
+                        android:text="添加当前位置" />
+
+
+                </LinearLayout>
 
             </LinearLayout>
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="5dp"
+                android:text="提交"
+                android:textSize="20dp"
+                android:background="@drawable/corner"
+                android:onClick="Submit"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="@color/button_blue"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/corner"
+                android:text="返回"
+                android:textSize="20dp"
+                android:onClick="BackToMain" />
+
         </LinearLayout>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="提交"
-            android:textSize="20dp"
-            android:background="@drawable/corner"
-            android:onClick="Submit"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="返回"
-            android:textSize="20dp"
-            android:background="@drawable/corner"
-            android:onClick="BackToMain"/>
 
     </LinearLayout>
 

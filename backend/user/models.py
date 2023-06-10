@@ -69,6 +69,19 @@ def FollowOrUnfollowAuthors(reader: User, author: User):
         return 'follow', True
 
 
+def GetUserBanningStatus(reader: User, author: User):
+    return reader.bannings.filter(id = author.id).exists()
+
+def BanOrDisbanUsers(reader: User, author: User):
+    if GetUserBanningStatus(reader, author):
+        reader.bannings.remove(author)
+        reader.save()
+        return 'disban', True
+    else:
+        reader.bannings.add(author)
+        reader.save()
+        return 'ban', True
+
 def CreateUser(info : dict):
     _, flag = GetUserByName(info['name'])
     if(flag):
@@ -94,7 +107,9 @@ def UpdateUser(id, info):
         print("successfully created profile example")
         # AddProfileToUser(User.objects.filter(id = id)[0], profile)
         User.objects.filter(id = id).update(**info)
-        User.objects.filter(id = id)[0].save()
+        user = GetUserById(id)[0]
+        user.image = profile
+        user.save()
     else:
         User.objects.filter(id = id).update(**info)
     return True

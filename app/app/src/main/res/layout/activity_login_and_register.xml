@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginAndRegisterActivity">
+    tools:context=".LoginAndRegisterActivity"
+    android:background="@drawable/backimg3">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -17,10 +18,10 @@
             android:id="@+id/login_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-black"
-            android:text="注册"
+            android:fontFamily="@font/stxingka"
+            android:text="注 册"
             android:textColor="#000000"
-            android:textSize="70dp"
+            android:textSize="80dp"
             android:layout_marginBottom="30dp"/>
 
         <LinearLayout
@@ -32,15 +33,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="用户名:"
+                android:text="用户名："
+                android:textColor="@color/black"
                 android:textSize="25dp"/>
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/username"
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
-                android:textSize="25dp"
-                android:contentDescription="username"/>
+                android:textSize="25dp"/>
 
         </LinearLayout>
 
@@ -53,7 +54,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="密    码:"
+                android:text="密    码："
+                android:textColor="@color/black"
                 android:textSize="25dp"/>
 
             <com.google.android.material.textfield.TextInputEditText
@@ -61,8 +63,7 @@
                 android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:textSize="25dp"
-                android:inputType="textPassword"
-                android:contentDescription="password"/>
+                android:inputType="textPassword"/>
 
         </LinearLayout>
 

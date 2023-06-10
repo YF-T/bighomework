@@ -84,6 +84,24 @@ def followauthor(request):
     return response
     
 
+@login_required
+def banauthor(request):
+    id = request.POST.get('username', '')
+    print(id)
+    author, flag = GetUserByName(id)  # 待关注的博客作者
+    if not flag:
+        response = JsonResponse({'status': 'author not found'})
+        response.status_code = 200
+        return response
+    user = request.user
+    banned, flag = BanOrDisbanUsers(user, author)
+    bool_banned = True if banned == 'ban' else False
+    response = JsonResponse({'status': 'success',
+                            'bool_banned': bool_banned})
+    response.status_code = 200
+    return response
+
+
 # 有条件的话可以将下方函数改成try-except形式
 @login_required
 def individualinfo(request):  # 返回用户主页的个人信息
@@ -198,6 +216,7 @@ def updatemyinfo(request):  # 更新用户个人信息（不包括头像）
         print(password)
         ChangeProfile = request.POST.get('ifChangeImage')
         if ChangeProfile == '1':
+            print("success")
             img = request.FILES['image']  # 参考博客封面图
             info = {
                 'name': request.POST.get('username', ''),
@@ -227,7 +246,7 @@ def updatemyinfo(request):  # 更新用户个人信息（不包括头像）
             response.status_code = 200
             return response
         else:
-            response = JsonResponse({'status': True, 'id': (int)(ich.id)})
+            response = JsonResponse({'status': True, 'id': (int)(ich.id), 'url': GetUserById(ich.id)[0].image.url})
             response.status_code = 200
             return response
     except:
@@ -244,8 +263,38 @@ def showfollowinglist(request):  # 返回“关注的人”列表
         length = len(ich.followings.all())
         if length != 0:
             index = ['id', 'name', 'identity', 'description', 'image']
-            author_list = ich.followings.values(*index).filter()
-            response = JsonResponse({'status': True, 'list': list(author_list)})
+            author_list = list(ich.followings.values(*index).filter())
+            for author in author_list:
+                author['image_url'] = '/image/' + author['image']
+                author['iffollow'] = ich.followings.filter(id = author['id']).exists()
+                author.pop('image')
+            response = JsonResponse({'status': True, 'list': author_list})
+            response.status_code = 200
+            return response
+        else:
+            response = JsonResponse({'status': True, 'list': []})
+            response.status_code = 200
+            return response
+    except:
+        response = JsonResponse({'status': False, 'list': 'error'})
+        response.status_code = 200
+        return response
+        
+        
+@login_required
+def showfollowerlist(request):  # 返回“关注的人”列表
+    ich = request.user.id
+    ich, _ = GetUserById(ich)
+    try:
+        length = len(ich.followers.all())
+        if length != 0:
+            index = ['id', 'name', 'identity', 'description', 'image']
+            author_list = list(ich.followers.values(*index).filter())
+            for author in author_list:
+                author['image_url'] = '/image/' + author['image']
+                author['iffollow'] = ich.followings.filter(id = author['id']).exists()
+                author.pop('image')
+            response = JsonResponse({'status': True, 'list': author_list})
             response.status_code = 200
             return response
         else:
@@ -688,10 +737,10 @@ def showabnninglist(request):  # 返回“关注的人”列表
     ich = request.user.id
     ich, _ = GetUserById(ich)
     try:
-        length = len(ich.followings.all())
+        length = len(ich.bannings.all())
         if length != 0:
             index = ['id', 'name', 'identity', 'description', 'image']
-            author_list = ich.followings.values(*index).filter()
+            author_list = ich.bannings.values(*index).filter()
             response = JsonResponse({'status': True, 'list': list(author_list)})
             response.status_code = 200
             return response

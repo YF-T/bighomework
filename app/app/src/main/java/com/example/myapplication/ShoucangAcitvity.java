@@ -35,8 +35,6 @@ public class ShoucangAcitvity extends Activity {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        searchDongTai();
-
         Button backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +45,12 @@ public class ShoucangAcitvity extends Activity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        searchDongTai();
     }
 
     public void searchDongTai() {

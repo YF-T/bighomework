@@ -50,6 +50,12 @@ public class GeRenZhongXinFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        WebRequest.setImageByUrl(user_image, GlobalVariable.get("userimageurl",""));
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -65,6 +71,7 @@ public class GeRenZhongXinFragment extends Fragment {
         user_image = view.findViewById(R.id.user_image);
         user_name = view.findViewById(R.id.user_name);
         user_email = view.findViewById(R.id.user_email);
+        user_email.setVisibility(TextView.INVISIBLE);
 
         resultLauncherForRegisterAndLogin = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             changeLayoutByStatus(view);
@@ -132,6 +139,7 @@ public class GeRenZhongXinFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         WebRequest.baseUrl = writecomment.getText().toString();
+                        GlobalVariable.set("baseurl", WebRequest.baseUrl);
                         dialogInterface.dismiss();
                     }
                 });

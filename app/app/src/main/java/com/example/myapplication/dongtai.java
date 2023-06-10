@@ -20,6 +20,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,7 +90,11 @@ public class dongtai extends AppCompatActivity {
         }
         title.setText(String.format("# %s", dongTaiContent.title));
         tag.setText(dongTaiContent.tag);
-        position.setText(dongTaiContent.position);
+        String tmp = dongTaiContent.position;
+        if(tmp.equals("添加当前位置")){
+            position.setVisibility(View.INVISIBLE);
+        }
+        else {position.setText(dongTaiContent.position);}
 
         Markwon markwon = Markwon.builder(this).build();
         markwon.setMarkdown(content, dongTaiContent.content);
@@ -111,6 +116,7 @@ public class dongtai extends AppCompatActivity {
                 Intent intent = new Intent(context, PersonalHomepageActivity.class);
                 intent.putExtra("username", dongTaiContent.publisher);
                 startActivity(intent);
+                overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
             }
         });
         comment.setOnClickListener(view -> {
@@ -199,15 +205,28 @@ public class dongtai extends AppCompatActivity {
         int columnCount = 3;
         int size = imagearray.size();
         //遍历集合 动态添加
+        if (imagearray.size() == 1 && imagearray.get(0).endsWith("mp4")) {
+            VideoView videoView = new VideoView(contentimg.getContext());
+            //加载网络视频，记得适配 6.0,7.0,9.0
+            String videoPath = WebRequest.baseUrl + imagearray.get(0);
+            videoView.setVideoPath(videoPath);
+
+            videoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            //由于宽（即列）已经定义权重比例 宽设置为0 保证均分
+            ViewGroup.LayoutParams layoutParams = videoView.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            layoutParams.height = 600;
+            videoView.setLayoutParams(layoutParams);
+            contentimg.addView(videoView);
+            videoView.requestFocus();
+            videoView.start();
+            return;
+        }
         for (int i = 0; i < size; i++) {
             GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount);//行数
             GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1
             SquareImageView imageView = new SquareImageView(contentimg.getContext());
-//            WebRequest.downloadImage(imagearray.get(i), bitmap -> {
-//                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-//                imageView.setImageBitmap(bitmap);
-//                return null;
-//            });
+
             WebRequest.setImageByUrl(imageView, imagearray.get(i));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -243,7 +262,7 @@ public class dongtai extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                commentAdapter.notifyItemChanged(0);
+                                commentAdapter.notifyDataSetChanged();
                                 comment.setText(String.format("评论(%d)", hashMap.get("num_comment")));
                                 loading.dismiss();
                             }

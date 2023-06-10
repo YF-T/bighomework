@@ -19,6 +19,7 @@ import android.os.PersistableBundle;
 import android.os.ResultReceiver;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         GlobalVariable.getInstance().setContext(this);
         WebRequest.context = this;
+        WebRequest.baseUrl = GlobalVariable.get("baseurl", WebRequest.baseUrl);
 
         Intent serviceIntent = new Intent(this, MyService.class);
         startService(serviceIntent);
@@ -51,7 +53,11 @@ public class MainActivity extends AppCompatActivity {
         initViewPager2();
 
         // 初始化时设置显示fragment1
-        viewPager2.setCurrentItem(0);
+        if (GlobalVariable.get("iflogin", false)) {
+            viewPager2.setCurrentItem(0);
+        } else {
+            viewPager2.setCurrentItem(3);
+        }
     }
 
     public void initBottomNavigationView() {
@@ -60,12 +66,24 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.shouye:
+                        if (GlobalVariable.get("iflogin", false) == false) {
+                            Toast.makeText(MainActivity.this, "请登录", Toast.LENGTH_SHORT);
+                            break;
+                        }
                         viewPager2.setCurrentItem(0);
                         break;
                     case R.id.huati:
+                        if (GlobalVariable.get("iflogin", false) == false) {
+                            Toast.makeText(MainActivity.this, "请登录", Toast.LENGTH_SHORT);
+                            break;
+                        }
                         viewPager2.setCurrentItem(1);
                         break;
                     case R.id.daodu:
+                        if (GlobalVariable.get("iflogin", false) == false) {
+                            Toast.makeText(MainActivity.this, "请登录", Toast.LENGTH_SHORT);
+                            break;
+                        }
                         viewPager2.setCurrentItem(2);
                         break;
                     case R.id.wode:
@@ -87,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
                     case 0:
                         return new ShouYeFragment();
                     case 1:
-                        return new HuaTiAndDaoDuAndWoDeFragment("话题");
+                        return new FollowerAndFolloweeFragment("following");
                     case 2:
-                        return new FollowerAndFolloweeFragment();
+                        return new FollowerAndFolloweeFragment("follower");
                     case 3:
                         return new GeRenZhongXinFragment();
                 }

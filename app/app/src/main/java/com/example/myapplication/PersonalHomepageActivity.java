@@ -1,10 +1,18 @@
 package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +46,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
     private ArrayList<DongTaiContent> dongTaiContents;
     private Button banButton;
     private int fans;
+    private Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +62,13 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         followOrUnfollow = findViewById(R.id.follow);
         sendMessage = findViewById(R.id.send_message);
         banButton = findViewById(R.id.banButton);
+        backButton = findViewById(R.id.back);
 
         // Set the user information
-        imageView.setImageResource(R.drawable.touxiang);
-        usernameTextView.setText("FrantGuo");
-        followingTextView.setText("关注：1");
-        followerTextView.setText("粉丝：1");
+        imageView.setImageResource(R.drawable.circle_profile);
+        usernameTextView.setText("   ");
+        followingTextView.setText("关注：  ");
+        followerTextView.setText("粉丝：  ");
 
         // Set up the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -76,10 +86,10 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                 // 如果已经登录，则进行跳转
                 // 跳转到私信界面，还没连接
                 String username = "Default";
-                GlobalVariable.get("username", username);
+                username = GlobalVariable.get("username", "");
                 Intent intent = new Intent(v.getContext(), ChatActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("sender", usernameTextView.toString());
+                bundle.putString("sender", usernameTextView.getText().toString());
                 bundle.putString("username", username);
                 intent.putExtras(bundle);
                 v.getContext().startActivity(intent);
@@ -105,12 +115,14 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                                     if((boolean) stringObjectHashMap.get("bool_follow")){
                                         // 点击表示从未关注变为关注
                                         followOrUnfollow.setText("取关");
+                                        v.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.tint_blue));
                                         fans += 1;
                                         String follower = "粉丝：" + Integer.toString(fans);
                                         followerTextView.setText(follower);
                                     }
                                     else{
                                         followOrUnfollow.setText("关注");
+                                        v.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.button_blue));
                                         fans -= 1;
                                         String follower = "粉丝：" + Integer.toString(fans);
                                         followerTextView.setText(follower);
@@ -134,10 +146,41 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                 if(txt.equals("取消屏蔽")){
                     // 已经拉黑，则从黑名单中移出
                     banButton.setText("将TA屏蔽");
+                    v.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.button_blue));
                 }
                 else{
                     banButton.setText("取消屏蔽");
+                    v.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.tint_blue));
                 }
+                boolean iflogin = true;
+                iflogin = GlobalVariable.get("iflogin", iflogin);
+                if(!iflogin){
+                    return;
+                }
+                HashMap<String, String> inputValues = getAllInputValues();
+                try {
+                    WebRequest.sendPostRequest("/user/ban", inputValues, new Function<HashMap<String, Object>, Void>() {
+                        @Override
+                        public Void apply(HashMap<String, Object> stringObjectHashMap) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if((boolean) stringObjectHashMap.get("bool_banned")){
+                                        // 已经拉黑，则从黑名单中移出
+                                        banButton.setText("将TA屏蔽");
+                                    }
+                                    else{
+                                        banButton.setText("取消屏蔽");
+                                    }
+                                }
+                            });
+                            return null;
+                        }
+                    });
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                // 之后还要刷新一下
             }
         });
 
@@ -174,7 +217,7 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                         if ((boolean) info.get("bool_ban")) {
                             banbuttontext = "取消屏蔽";
                         } else {
-                            banbuttontext = "屏蔽TA";
+                            banbuttontext = "将TA屏蔽";
                         }
 
                         // Update the UI with the retrieved user information
@@ -186,11 +229,44 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                                 followingTextView.setText(following);
                                 followerTextView.setText(follower);
                                 followOrUnfollow.setText(followOrUnfollowtext);
+                                if(followOrUnfollowtext.equals("取关")){
+                                    followOrUnfollow.setBackgroundColor(getResources().getColor(R.color.tint_blue));
+                                }
+                                else{
+                                    followOrUnfollow.setBackgroundColor(getResources().getColor(R.color.button_blue));
+                                }
                                 banButton.setText(banbuttontext);
+                                if(banbuttontext.equals("取消屏蔽")){
+                                    banButton.setBackgroundColor(getResources().getColor(R.color.tint_blue));
+                                }
+                                else{
+                                    banButton.setBackgroundColor(getResources().getColor(R.color.button_blue));
+                                }
                                 WebRequest.downloadImage(image, bitmap -> {
-                                    // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-                                    // 是抄的UserInformationActivity，这个代码很像只能返回默认头像的样子……
-                                    imageView.setImageBitmap(bitmap);
+                                    int width = bitmap.getWidth();
+                                    int height = bitmap.getHeight();
+                                    // 计算正方形的边长
+                                    int size = Math.min(width, height);
+                                    // 计算裁剪的起始位置
+                                    int x = (width - size) / 2;
+                                    int y = (height - size) / 2;
+                                    Bitmap squareBitmap = Bitmap.createBitmap(bitmap, x, y, size, size);
+                                    Bitmap circularBitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+                                    Canvas canvas = new Canvas(circularBitmap);
+                                    Paint paint = new Paint();
+                                    Rect rect = new Rect(0, 0, size, size);
+                                    RectF rectF = new RectF(rect);
+                                    float radius = size / 2f;
+                                    paint.setAntiAlias(true);
+                                    canvas.drawARGB(0, 0, 0, 0);
+                                    canvas.drawCircle(radius, radius, radius, paint);
+                                    paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+                                    canvas.drawBitmap(squareBitmap, rect, rect, paint);
+
+                                    imageView.post(() -> {
+                                        imageView.setImageBitmap(circularBitmap);
+                                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                                    });
                                     return null;
                                 });
                             }
@@ -202,6 +278,12 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         searchDongTai();
     }
@@ -209,15 +291,6 @@ public class PersonalHomepageActivity extends AppCompatActivity {
     // Method to generate dummy data for RecyclerView
     private ArrayList<DongTaiContent> getDongTaiData() {
         dongTaiContents = new ArrayList<>();
-//        dongTaiContents.add(
-//                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "14:00 Mar 23rd",
-//                        "盛典即将开启，让世界更美。", 1,2,3,"微博盛典",
-//                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage))));
-//        dongTaiContents.add(
-//                new DongTaiContent("FrantGuo", GlobalVariable.defaultImage, "15:25 Feb 25th",
-//                        "感谢徐工集团的大力支持！\n体验很好，下次还来！", 7,10,2, "徐工集团拜访记",
-//                        new ArrayList<String>(Arrays.asList(GlobalVariable.defaultImage,GlobalVariable.defaultImage))));
-//        // Add dummy data here
         return dongTaiContents;
     }
 

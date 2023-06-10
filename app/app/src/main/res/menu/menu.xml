@@ -11,12 +11,12 @@
     <item
         android:id="@+id/huati"
         android:icon="@drawable/baseline_topic_24"
-        android:title="话题"/>
+        android:title="关注"/>
 
     <item
         android:id="@+id/daodu"
         android:icon="@drawable/baseline_book_24"
-        android:title="关注"/>
+        android:title="粉丝"/>
 
     <item
         android:id="@+id/wode"

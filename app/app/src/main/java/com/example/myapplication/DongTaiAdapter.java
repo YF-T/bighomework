@@ -1,7 +1,9 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -45,6 +48,7 @@ public class DongTaiAdapter extends RecyclerView.Adapter<DongTaiViewHolder> {
                 bundle.putSerializable("DongTaiContent", dongTaiContent);
                 intent.putExtras(bundle);
                 view.getContext().startActivity(intent);
+                ((Activity)view.getContext()).overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
             }
         });
         return dongTaiViewHolder;
@@ -64,7 +68,17 @@ public class DongTaiAdapter extends RecyclerView.Adapter<DongTaiViewHolder> {
         holder.collect.setText(String.format("收藏(%d)", dongTaiContent.collect));
         holder.title.setText(String.format("# %s", dongTaiContent.title));
         holder.tag.setText(dongTaiContent.tag);
-        holder.position.setText(dongTaiContent.position);
+        if (dongTaiContent.bool_thumb) {
+            holder.like.setTextColor(Color.BLUE);
+        }
+        if (dongTaiContent.bool_collect) {
+            holder.like.setTextColor(Color.BLUE);
+        }
+        String tmp = dongTaiContent.position;
+        if(tmp.equals("添加当前位置")){
+            holder.position.setVisibility(View.INVISIBLE);
+        }
+        else {holder.position.setText(dongTaiContent.position);}
 
         Markwon markwon = Markwon.builder(inflater.getContext()).build();
         markwon.setMarkdown(holder.content, dongTaiContent.content);
@@ -112,16 +126,29 @@ class DongTaiViewHolder extends RecyclerView.ViewHolder {
         contentimg.removeAllViews();//清空子视图 防止原有的子视图影响
         int columnCount = 3;
         int size = imagearray.size();
+        if (imagearray.size() == 1 && imagearray.get(0).endsWith("mp4")) {
+            VideoView videoView = new VideoView(contentimg.getContext());
+            //加载网络视频，记得适配 6.0,7.0,9.0
+            String videoPath = WebRequest.baseUrl + imagearray.get(0);
+            videoView.setVideoPath(videoPath);
+
+            videoView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            //由于宽（即列）已经定义权重比例 宽设置为0 保证均分
+            ViewGroup.LayoutParams layoutParams = videoView.getLayoutParams();
+            layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT;
+            layoutParams.height = 600;
+            videoView.setLayoutParams(layoutParams);
+            contentimg.addView(videoView);
+            videoView.requestFocus();
+            videoView.start();
+            return;
+        }
         //遍历集合 动态添加
         for (int i = 0; i < size; i++) {
             GridLayout.Spec rowSpec = GridLayout.spec(i / columnCount);//行数
             GridLayout.Spec columnSpec = GridLayout.spec(i % columnCount, 1.0f);//列数 列宽的比例 weight=1
             SquareImageView imageView = new SquareImageView(contentimg.getContext());
-//            WebRequest.downloadImage(imagearray.get(i), bitmap -> {
-//                // 在这里处理下载完成后的逻辑，例如将图片显示在ImageView中
-//                imageView.setImageBitmap(bitmap);
-//                return null;
-//            });
+
             WebRequest.setImageByUrl(imageView, imagearray.get(i));
 //            imageView.setImageURI(Uri.parse(imagearray.get(i)));
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

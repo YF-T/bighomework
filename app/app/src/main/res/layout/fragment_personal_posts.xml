@@ -8,25 +8,48 @@
         android:id="@+id/user_info"
         android:layout_width="match_parent"
         android:layout_height="280dp"
-        android:background="@drawable/backimg"
+        android:background="@drawable/backimg2"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
-        <Button
-            android:id="@+id/banButton"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginRight="5dp"
-            android:backgroundTint="@color/tint_blue"
-            android:text="将TA屏蔽" />
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginLeft="5dp"
+                android:backgroundTint="@color/button_blue"
+                android:text="返回" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/banButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="5dp"
+                android:backgroundTint="@color/button_blue"
+                android:text="将TA屏蔽" />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
-            app:srcCompat="@drawable/touxiang" />
+            android:background="@drawable/circle_profile"
+            android:src="@drawable/touxiang"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:id="@+id/username"
@@ -88,7 +111,7 @@
                 android:layout_weight="1"
                 android:layout_marginRight="15dp"
                 android:clickable="true"
-                android:backgroundTint="@color/tint_blue"
+                android:backgroundTint="@color/button_blue"
                 android:text="关注" />
 
             <Button
@@ -98,7 +121,7 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="15dp"
                 android:clickable="true"
-                android:backgroundTint="@color/tint_blue"
+                android:backgroundTint="@color/button_blue"
                 android:text="私信" />
         </LinearLayout>
     </LinearLayout>
