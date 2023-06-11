@@ -41,7 +41,8 @@ def open(request):
     mydongtai, flag = OpenDongTai(dongtai_id, user)
     comments, flag2 = showcomments(GetDongTaiById(dongtai_id)[0], user) # 因为函数返回的是一个(dongtai, Ture)二元组故要加一个[0]
     if flag and flag2:
-        response = JsonResponse({'status': 'success', 'dongtai': mydongtai, 'comments': comments, 'iffollow': user.followings.filter(id=GetDongTaiById(dongtai_id)[0].user.id).exists()})
+        response = JsonResponse({'status': 'success', 'dongtai': mydongtai, 'comments': comments, 'iffollow': user.followings.filter(id=GetDongTaiById(dongtai_id)[0].author.id).exists()})
+        print(user.followings.filter(id=GetDongTaiById(dongtai_id)[0].author.id).exists())
         response.status_code = 200
     else:
         response = JsonResponse({'status': 'fail'})

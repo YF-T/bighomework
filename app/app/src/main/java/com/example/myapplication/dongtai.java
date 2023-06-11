@@ -50,6 +50,7 @@ public class dongtai extends AppCompatActivity {
     private CommentAdapter commentAdapter;
     private TextView tag;
     private TextView position;
+    private TextView iffollow;
     private List<CommentContent> comments = new ArrayList<>();
     private DongTaiContent dongTaiContent;
 
@@ -74,6 +75,7 @@ public class dongtai extends AppCompatActivity {
         recyclerView = findViewById(R.id.comment_items);
         tag = findViewById(R.id.tag);
         position = findViewById(R.id.position);
+        iffollow = findViewById(R.id.ifguanzhu);
 
         WebRequest.setImageByUrl(headimg, dongTaiContent.headimg);
 
@@ -96,7 +98,12 @@ public class dongtai extends AppCompatActivity {
             position.setVisibility(View.INVISIBLE);
         }
         else {position.setText(dongTaiContent.position);}
-
+        if(dongTaiContent.bool_follow) {
+            iffollow.setText("已关注");
+        }
+        else {
+            iffollow.setText("未关注");
+        }
         Markwon markwon = Markwon.builder(this).build();
         markwon.setMarkdown(content, dongTaiContent.content);
 
@@ -106,8 +113,6 @@ public class dongtai extends AppCompatActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(dongtai.this));
         recyclerView.setAdapter(commentAdapter);
-
-        getComments();
 
         Context context = this;
         headimg.setClickable(true);
@@ -171,6 +176,13 @@ public class dongtai extends AppCompatActivity {
                 throw new RuntimeException(e);
             }
         });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getComments();
     }
 
     private void getComments() {
@@ -180,7 +192,9 @@ public class dongtai extends AppCompatActivity {
             WebRequest.sendGetRequest("/dongtai/dongtai", args, hashMap -> {
                 try {
                     dongTaiContent = new DongTaiContent(JsonUtil.jsonObjectToHashMap((JSONObject) hashMap.get("dongtai")));
+                    Log.d("dict", JsonUtil.jsonObjectToHashMap((JSONObject) hashMap.get("dongtai")).toString());
                     ArrayList<Object> arrayList = JsonUtil.jsonArrayToArrayList((JSONArray) hashMap.get("comments"));
+                    boolean iffollow1 = (boolean) hashMap.get("iffollow");
                     for (Object o: arrayList) {
                         HashMap<String, Object> commentHashMap = (HashMap<String, Object>) o;
                         comments.add(new CommentContent((String) commentHashMap.get("author"), (String) commentHashMap.get("content")));
@@ -193,6 +207,11 @@ public class dongtai extends AppCompatActivity {
                             }
                             if (dongTaiContent.bool_collect) {
                                 collect.setTextColor(Color.BLUE);
+                            }
+                            if (iffollow1) {
+                                iffollow.setText("已关注");
+                            } else{
+                                iffollow.setText("未关注");
                             }
                         }
                     });
