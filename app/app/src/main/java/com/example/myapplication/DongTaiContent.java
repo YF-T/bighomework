@@ -55,8 +55,14 @@ public class DongTaiContent implements Serializable {
         if (hashMap.containsKey("author__name")) {
             publisher = (String) hashMap.get("author__name");
         }
+        if (hashMap.containsKey("author")) {
+            publisher = (String) hashMap.get("author");
+        }
         if (hashMap.containsKey("author__image")) {
             headimg = (String) hashMap.get("author__image");
+        }
+        if (hashMap.containsKey("author_image")) {
+            headimg = (String) hashMap.get("author_image");
         }
         if (hashMap.containsKey("created_time")) {
             time = (String) hashMap.get("created_time");
