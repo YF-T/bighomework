@@ -14,7 +14,8 @@
         android:textColor="@color/black"
         android:textSize="24dp"
         android:padding="10dp"
-        android:fontFamily="@font/msyhbd"
+        android:gravity="center"
+        android:fontFamily="@font/STXINGKA"
         android:text="黑名单" />
 
     <View
