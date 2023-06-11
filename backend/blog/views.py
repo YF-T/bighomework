@@ -41,7 +41,7 @@ def open(request):
     mydongtai, flag = OpenDongTai(dongtai_id, user)
     comments, flag2 = showcomments(GetDongTaiById(dongtai_id)[0], user) # 因为函数返回的是一个(dongtai, Ture)二元组故要加一个[0]
     if flag and flag2:
-        response = JsonResponse({'status': 'success', 'dongtai': mydongtai, 'comments': comments})
+        response = JsonResponse({'status': 'success', 'dongtai': mydongtai, 'comments': comments, 'iffollow': user.followings.filter(id=GetDongTaiById(dongtai_id)[0].user.id).exists()})
         response.status_code = 200
     else:
         response = JsonResponse({'status': 'fail'})
@@ -227,9 +227,9 @@ def uploaddongtaiimage(request):
 
 @login_required
 def getusermessage(request):
-    last_time, flag = GetUserRecieveMessage(request.user)
+    last_time, type, flag = GetUserRecieveMessage(request.user)
     if flag:
-        response = JsonResponse({'status': 'success', 'last_time':last_time})
+        response = JsonResponse({'status': 'success', 'last_time':last_time, 'type': type})
         response.status_code = 200
     else:
         response = JsonResponse({'status': 'error'})

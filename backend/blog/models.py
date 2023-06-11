@@ -229,6 +229,7 @@ def ApproveDongTai(dongtai: DongTai, user: User):
         dongtai.thumbing_users.add(user)
         dongtai.num_thumbs += 1
         dongtai.save()
+        SendApproveMessage(user, dongtai.author, dongtai)
         return 'approve', True
         
 def CollectDongTai(dongtai: DongTai, user: User):
@@ -354,7 +355,7 @@ def InitCommentDatabase():
     
     
 class UserMessage(models.Model):
-    TYPE = (('C', 'Comment'), ('B', 'DongTai'))
+    TYPE = (('C', 'Comment'), ('B', 'DongTai'), ('A', 'Approve'))
     from_user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='send_message') # 发送用户
     to_user = models.ForeignKey('user.User', on_delete=models.CASCADE, related_name='recieve_message') # 接收用户
     dongtai = models.ForeignKey('blog.DongTai', on_delete=models.CASCADE, related_name='about_message', null=True) # 相关博客
@@ -388,10 +389,20 @@ def SendDongTaiMessage(from_user, to_user, dongtai):
     }
     info['message'] = '您关注的用户“%s”新发表了一篇文章《%s》，快去看看吧！' % (from_user.name, dongtai.title)
     return SendMessage(info)
+    
+def SendApproveMessage(from_user, to_user, dongtai):
+    info = {
+        'from_user': from_user, 
+        'to_user': to_user, 
+        'dongtai': dongtai, 
+        'message_type': 'Approve'
+    }
+    info['message'] = '您关注的用户“%s”新发表了一篇文章《%s》，快去看看吧！' % (from_user.name, dongtai.title)
+    return SendMessage(info)
 
 def GetUserRecieveMessage(user):
     user = GetUserById(user.id)[0]
-    index = ['created_time']
+    index = ['created_time', 'message_type']
     messages = list(user.recieve_message.all().order_by('-created_time').values(*index))
     # for message in messages:
     #     message['created_time'] = message.pop('created_time')
@@ -401,9 +412,9 @@ def GetUserRecieveMessage(user):
     #     message['dongtai_tag'] = message.pop('dongtai__tag')
     #     message['dongtai_id'] = message.pop('dongtai__id')
     if len(messages) > 0:
-        last_time = messages[0]["created_time"]
-        return last_time,True
-    return "nothing",True
+        last_time, message = messages[0]["created_time"], messages[0]['message_type']
+        return last_time, message, True
+    return "nothing",None, True
 
 def NewMsgTime(user):
     timelist = ChatMessage.objects.filter(receiver=user).values_list('created_time', flat=True)
