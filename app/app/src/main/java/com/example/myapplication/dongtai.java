@@ -114,8 +114,6 @@ public class dongtai extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(dongtai.this));
         recyclerView.setAdapter(commentAdapter);
 
-        getComments();
-
         Context context = this;
         headimg.setClickable(true);
         headimg.setOnClickListener(new View.OnClickListener() {
@@ -181,6 +179,12 @@ public class dongtai extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getComments();
+    }
+
     private void getComments() {
         HashMap<String, String> args = new HashMap<>();
         args.put("id", Integer.toString(dongTaiContent.id));
@@ -188,7 +192,9 @@ public class dongtai extends AppCompatActivity {
             WebRequest.sendGetRequest("/dongtai/dongtai", args, hashMap -> {
                 try {
                     dongTaiContent = new DongTaiContent(JsonUtil.jsonObjectToHashMap((JSONObject) hashMap.get("dongtai")));
+                    Log.d("dict", JsonUtil.jsonObjectToHashMap((JSONObject) hashMap.get("dongtai")).toString());
                     ArrayList<Object> arrayList = JsonUtil.jsonArrayToArrayList((JSONArray) hashMap.get("comments"));
+                    boolean iffollow1 = (boolean) hashMap.get("iffollow");
                     for (Object o: arrayList) {
                         HashMap<String, Object> commentHashMap = (HashMap<String, Object>) o;
                         comments.add(new CommentContent((String) commentHashMap.get("author"), (String) commentHashMap.get("content")));
@@ -202,7 +208,7 @@ public class dongtai extends AppCompatActivity {
                             if (dongTaiContent.bool_collect) {
                                 collect.setTextColor(Color.BLUE);
                             }
-                            if (dongTaiContent.bool_follow) {
+                            if (iffollow1) {
                                 iffollow.setText("已关注");
                             } else{
                                 iffollow.setText("未关注");
