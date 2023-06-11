@@ -126,6 +126,8 @@ public class MyService extends Service {
         HashMap<String, String> requestArgs = new HashMap<>();
         WebRequest.sendGetRequest("/dongtai/message", requestArgs, (result) -> {
             String status = (String) result.get("status");
+            String msgtype = (String) result.get("type");
+
             if(status.equals("success")) {
                 String newtime = (String) result.get("last_time");
                 if (first_created_dongtai){
@@ -134,18 +136,46 @@ public class MyService extends Service {
                 }
                 else{
                     if (!newtime.equals(lastdongtaitime)){
-                        Log.d("service:","newcomment");
                         lastdongtaitime = newtime;
-                        // 创建通知构建器
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(MyService.this, "111")
-                                .setSmallIcon(R.drawable.touxiang)
-                                .setContentTitle("大作业")
-                                .setContentText("您有新的动态消息")
-                                .setPriority(NotificationCompat.PRIORITY_MAX);
+                        if (msgtype.equals("A") || msgtype.equals("Approve")) {
+                            // 创建通知构建器
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(MyService.this, "111")
+                                    .setSmallIcon(R.drawable.touxiang)
+                                    .setContentTitle("大作业")
+                                    .setContentText("您的动态有新的点赞!")
+                                    .setPriority(NotificationCompat.PRIORITY_MAX);
 
-                        // 显示通知
-                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyService.this);
-                        notificationManager.notify(notificationId, builder.build());
+                            // 显示通知
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyService.this);
+                            notificationManager.notify(notificationId, builder.build());
+                        }
+                        else if (msgtype.equals('B') || msgtype.equals("DongTai")) {
+                            // 创建通知构建器
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(MyService.this, "111")
+                                    .setSmallIcon(R.drawable.touxiang)
+                                    .setContentTitle("大作业")
+                                    .setContentText("您关注的用户发布了一条新消息!")
+                                    .setPriority(NotificationCompat.PRIORITY_MAX);
+
+                            // 显示通知
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyService.this);
+                            notificationManager.notify(notificationId, builder.build());
+                        }
+                        else if (msgtype.equals('C')|| msgtype.equals("Comment")) {
+                            // 创建通知构建器
+                            NotificationCompat.Builder builder = new NotificationCompat.Builder(MyService.this, "111")
+                                    .setSmallIcon(R.drawable.touxiang)
+                                    .setContentTitle("大作业")
+                                    .setContentText("您有新的评论!")
+                                    .setPriority(NotificationCompat.PRIORITY_MAX);
+
+                            // 显示通知
+                            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyService.this);
+                            notificationManager.notify(notificationId, builder.build());
+                        }
+                        else{
+                            // nothing
+                        }
 
 //                        List<NotificationChannel> channelList = notificationManager.getNotificationChannels();
 //
