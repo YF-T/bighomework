@@ -142,16 +142,6 @@ public class PersonalHomepageActivity extends AppCompatActivity {
         banButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                String txt = banButton.getText().toString();
-                if(txt.equals("取消屏蔽")){
-                    // 已经拉黑，则从黑名单中移出
-                    banButton.setText("将TA屏蔽");
-                    v.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.button_blue));
-                }
-                else{
-                    banButton.setText("取消屏蔽");
-                    v.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.tint_blue));
-                }
                 boolean iflogin = true;
                 iflogin = GlobalVariable.get("iflogin", iflogin);
                 if(!iflogin){
@@ -167,10 +157,10 @@ public class PersonalHomepageActivity extends AppCompatActivity {
                                 public void run() {
                                     if((boolean) stringObjectHashMap.get("bool_banned")){
                                         // 已经拉黑，则从黑名单中移出
-                                        banButton.setText("将TA屏蔽");
+                                        banButton.setText("取消屏蔽");
                                     }
                                     else{
-                                        banButton.setText("取消屏蔽");
+                                        banButton.setText("将TA屏蔽");
                                     }
                                 }
                             });

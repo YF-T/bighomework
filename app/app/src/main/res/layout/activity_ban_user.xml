@@ -15,7 +15,7 @@
         android:textSize="24dp"
         android:padding="10dp"
         android:gravity="center"
-        android:fontFamily="@font/STXINGKA"
+        android:fontFamily="@font/stxingka"
         android:text="黑名单" />
 
     <View

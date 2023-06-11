@@ -1,9 +1,11 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,19 +83,32 @@ public class FollowerAndFolloweeFragment extends Fragment {
         }
         try {
             WebRequest.sendGetRequest(url, args, hashMap -> {
-                userArrayList.clear();
-                try {
-                    ArrayList<Object> arrayList = JsonUtil.jsonArrayToArrayList((JSONArray) hashMap.get("list"));
-                    for (Object o: arrayList) {
-                        userArrayList.add(new UserContent((HashMap<String, Object>) o));
-                    }
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+//                userArrayList.clear();
+//                try {
+//                    ArrayList<Object> arrayList = JsonUtil.jsonArrayToArrayList((JSONArray) hashMap.get("list"));
+//                    for (Object o: arrayList) {
+//                        Log.d("qwert", "qwert");
+//                        userArrayList.add(new UserContent((HashMap<String, Object>) o));
+//                    }
+//                } catch (JSONException e) {
+//                    throw new RuntimeException(e);
+//                }
                 getActivity().runOnUiThread(new Runnable() {
+                    @SuppressLint("NotifyDataSetChanged")
                     @Override
                     public void run() {
+                        userArrayList.clear();
+                        try {
+                            ArrayList<Object> arrayList = JsonUtil.jsonArrayToArrayList((JSONArray) hashMap.get("list"));
+                            for (Object o: arrayList) {
+                                Log.d("qwert", "qwert");
+                                userArrayList.add(new UserContent((HashMap<String, Object>) o));
+                            }
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
                         loading.dismiss();
+                        Log.d("qwert", "" + userArrayList.size());
                         adapter.notifyDataSetChanged();
                     }
                 });
