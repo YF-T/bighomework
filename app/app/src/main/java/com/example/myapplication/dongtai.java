@@ -115,7 +115,7 @@ public class dongtai extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, PersonalHomepageActivity.class);
-                intent.putExtra("username", dongTaiContent.publisher);
+                intent.putExtra("username", publisher.getText().toString());
                 startActivity(intent);
                 overridePendingTransition(R.anim.zoom_in, R.anim.zoom_out);
             }

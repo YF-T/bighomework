@@ -211,7 +211,7 @@ def SearchDongTai(key: str, tag: str, sortkey: str, iffollow: str, type: str, us
     sortkeydict = {'新发表': 'created_time', 
                    '回复多': 'num_comments',
                    '热度高': 'num_thumbs', 
-                   '收藏多': 'num_collect'}
+                   '收藏多': 'num_collects'}
     try:
         # 四种排序都需要测试并返回，返回的均为dataframe格式，在这转成list格式
         dongtais = SortDongTai(sortkeydict[sortkey], data).to_dict('records')
