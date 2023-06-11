@@ -171,6 +171,7 @@ public class GeRenZhongXinFragment extends Fragment {
             logout.setVisibility(View.VISIBLE);
             mystar.setVisibility(View.VISIBLE);
             user_name.setVisibility(View.VISIBLE);
+            myban.setVisibility(View.VISIBLE);
             user_name.setText(GlobalVariable.get("username", ""));
             WebRequest.setImageByUrl(user_image, GlobalVariable.get("userimageurl", "/image/user/abc.jpg"));
         } else {
@@ -180,6 +181,7 @@ public class GeRenZhongXinFragment extends Fragment {
             register.setVisibility(View.VISIBLE);
             logout.setVisibility(View.GONE);
             mystar.setVisibility(View.GONE);
+            myban.setVisibility(View.GONE);
             user_image.setImageResource(R.drawable.ic_logoutimage_foreground);
             user_name.setText("未登录");
         }

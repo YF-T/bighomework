@@ -414,7 +414,7 @@ def GetUserRecieveMessage(user):
     if len(messages) > 0:
         last_time, message = messages[0]["created_time"], messages[0]['message_type']
         return last_time, message, True
-    return "nothing",None, True
+    return "nothing","", True
 
 def NewMsgTime(user):
     timelist = ChatMessage.objects.filter(receiver=user).values_list('created_time', flat=True)
