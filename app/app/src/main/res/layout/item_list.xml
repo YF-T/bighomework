@@ -54,6 +54,14 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/msyh"
+            android:text="20:35 Apr 7th"
+            android:textSize="16dp" />
+
+        <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -112,14 +120,6 @@
 
         </GridLayout>
 
-        <TextView
-            android:id="@+id/time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:fontFamily="serif"
-            android:text="20:35 Apr 7th"
-            android:textSize="16dp" />
 
         <TextView
             android:id="@+id/position"
