@@ -180,7 +180,7 @@ public class ShouYeFragment extends Fragment {
         args.put("key", searchText);
         args.put("tag", selectedTag);
         args.put("sortkey", selectedOrder);
-        if (selectedFollow.equals("仅关注")){
+        if (selectedFollow.equals("我的关注")){
             args.put("iffollow", "follow");
         } else {
             args.put("iffollow", "");

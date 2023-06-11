@@ -107,7 +107,6 @@ public class UserInformationActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                finish(); // 结束当前的Activity
             }
         });
 
@@ -248,6 +247,7 @@ public class UserInformationActivity extends AppCompatActivity {
                 @Override
                 public Void apply(HashMap<String, Object> stringObjectHashMap) {
                     GlobalVariable.set("userimageurl", (String) stringObjectHashMap.get("url"));
+                    finish();
                     return null;
                 }
             });
@@ -257,6 +257,7 @@ public class UserInformationActivity extends AppCompatActivity {
         WebRequest.sendPostRequest("/user/updatemyinfo", inputValues, new Function<HashMap<String, Object>, Void>() {
             @Override
             public Void apply(HashMap<String, Object> stringObjectHashMap) {
+                finish();
                 return null;
             }
         });

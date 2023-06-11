@@ -52,7 +52,8 @@ public class GeRenZhongXinFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        WebRequest.setImageByUrl(user_image, GlobalVariable.get("userimageurl",""));
+        changeLayoutByStatus(null);
+        //WebRequest.setImageByUrl(user_image, GlobalVariable.get("userimageurl",""));
     }
 
     @Override
