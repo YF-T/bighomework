@@ -192,7 +192,7 @@ public class dongtai extends AppCompatActivity {
             WebRequest.sendGetRequest("/dongtai/dongtai", args, hashMap -> {
                 try {
                     dongTaiContent = new DongTaiContent(JsonUtil.jsonObjectToHashMap((JSONObject) hashMap.get("dongtai")));
-                    Log.d("dict", JsonUtil.jsonObjectToHashMap((JSONObject) hashMap.get("dongtai")).toString());
+                    comments.clear();
                     ArrayList<Object> arrayList = JsonUtil.jsonArrayToArrayList((JSONArray) hashMap.get("comments"));
                     boolean iffollow1 = (boolean) hashMap.get("iffollow");
                     for (Object o: arrayList) {
